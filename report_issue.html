@@ -2,20 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Report Issue | Municipal Control Center</title>
+  <title>Report Issue | AMRAAVATI MUNICIPAL CORPORATION</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <style>
     :root {
       --primary: #1e4d7c;
+      --primary-dark: #003366;
+      --primary-light: #3a6b9c;
+      --secondary: #ff9933;
+      --secondary-light: #ffcc99;
       --success: #0b6e4f;
       --warning: #b6581c;
       --danger: #a11d2b;
-      --dark: #0a1c2f;
-      --light: #f4f7fc;
+      --gray-100: #f0f4f9;
+      --gray-200: #e5eaef;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --radius: 14px;
     }
 
     * {
@@ -26,169 +40,116 @@
     }
 
     body {
-      background: #eef2f7;
-      color: #1a2b3c;
+      background: var(--bg);
+      color: var(--gray-800);
+      min-height: 100vh;
     }
 
-    /* Header - Matching original */
-    .header {
+    /* Header */
+    header {
       background: linear-gradient(135deg, #003366, #001f4a);
-      color: white;
-      padding: 18px 30px;
-      font-size: 22px;
-      font-weight: 600;
-      border-bottom: 4px solid #ff9933;
+      padding: 16px 40px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #ff9933;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .header-left {
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .emblem-logo {
-      width: 42px;
-      height: 42px;
-      object-fit: contain;
-      background: white;
-      border-radius: 50%;
-      padding: 4px;
+    .logo i {
+      color: #ff9933;
     }
 
     .header-btn {
       padding: 10px 18px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.15);
-      color: white;
+      border-radius: 12px;
+      background: white;
+      color: #003366;
       text-decoration: none;
-      font-weight: 500;
-      font-size: 14px;
-      transition: all 0.2s;
-      border: 1px solid rgba(255,255,255,0.2);
+      font-weight: 600;
+      margin-left: 10px;
+      transition: all 0.25s ease;
     }
 
     .header-btn:hover {
-      background: rgba(255,255,255,0.25);
-      transform: translateY(-2px);
+      background: #f9fafb;
+      color: #ff9933;
+      transform: translateY(-1px);
     }
 
-    /* Alert Banner - Matching original style */
-    .alert-banner {
-      background: #fff1f0;
-      border-left: 4px solid #a11d2b;
-      color: #a11d2b;
-      padding: 12px 30px;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-
-    /* Stats Cards - Matching original */
-    .stats {
-      display: flex;
-      gap: 20px;
-      padding: 20px 30px;
-      flex-wrap: wrap;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      min-width: 200px;
-      flex: 1;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      border-left: 4px solid var(--primary);
-    }
-
-    .stat-card h2 {
-      margin: 0;
-      font-size: 28px;
-      color: #003366;
-    }
-
-    .stat-title {
-      color: #5a6f8c;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Main Container */
+    /* Page Layout */
     .container {
       max-width: 900px;
-      margin: 30px auto;
-      padding: 0 30px;
-    }
-
-    .page-header {
-      margin-bottom: 20px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
     .page-title {
-      font-size: 24px;
-      font-weight: 600;
+      font-size: 32px;
+      font-weight: 800;
       color: #003366;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     .page-subtitle {
       color: #5a6f8c;
-      font-size: 14px;
+      margin-bottom: 30px;
+      font-size: 16px;
     }
 
-    /* Card - Matching table-box style */
     .card {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: var(--card);
       padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0,51,102,0.08);
+      border: 1px solid var(--gray-200);
     }
 
-    /* Form Elements */
     .form-group {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     label {
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       display: block;
-      color: #1e3a5f;
-      font-size: 14px;
+      color: #003366;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      outline: none;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--gray-200);
+      background: white;
       font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      background: #f8fafc;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(30, 77, 124, 0.1);
-      background: white;
+      outline: none;
+      border-color: #ff9933;
+      box-shadow: 0 0 0 4px rgba(255,153,51,0.1);
     }
 
     textarea {
-      resize: vertical;
-      min-height: 100px;
+      resize: none;
     }
 
     .char-count {
       font-size: 12px;
-      color: #5a6f8c;
+      color: var(--gray-500);
       text-align: right;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .row {
@@ -200,279 +161,234 @@
       flex: 1;
     }
 
-    /* Camera Button - Matching action-btn style */
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .toggle input {
+      width: auto;
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      max-width: 200px;
+      border-radius: 10px;
+      display: none;
+    }
+
     .camera-btn {
       margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 6px;
+      padding: 10px 16px;
+      border-radius: 12px;
       border: none;
-      background: var(--primary);
+      background: linear-gradient(135deg, #1e4d7c, #003366);
       color: white;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
-      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0,51,102,0.4);
+      transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .camera-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      background: #1e5a8c;
+      box-shadow: 0 6px 20px rgba(0,51,102,0.5);
     }
 
-    /* Video and Preview */
     video {
-      margin-top: 15px;
+      margin-top: 10px;
       width: 100%;
       max-width: 320px;
-      border-radius: 8px;
+      border-radius: 12px;
       display: none;
-      border: 2px solid #cbd5e1;
     }
 
     canvas {
       display: none;
     }
 
-    .image-preview {
-      margin-top: 15px;
-      max-width: 200px;
-      border-radius: 8px;
-      display: none;
-      border: 2px solid #cbd5e1;
-      padding: 4px;
-    }
-
-    /* File Input Styling */
-    input[type="file"] {
-      padding: 8px;
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-    }
-
-    /* Toggle Switch Style */
-    .toggle {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #f8fafc;
-      padding: 12px 16px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-    }
-
-    .toggle input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-      margin: 0;
-    }
-
-    .toggle label {
-      margin: 0;
-      font-weight: 500;
-      color: #1a2b3c;
-    }
-
-    /* Submit Button - Matching deploy button style */
     .submit-btn {
       width: 100%;
       padding: 14px;
-      border-radius: 6px;
+      border-radius: 12px;
       border: none;
-      background: var(--success);
+      background: linear-gradient(135deg, #ff9933, #b6581c);
       color: white;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       margin-top: 20px;
-      transition: all 0.2s;
+      box-shadow: 0 10px 25px rgba(255,153,51,0.45);
+      transition: all 0.25s ease;
     }
 
     .submit-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(11, 110, 79, 0.3);
-      background: #0d8a5c;
+      box-shadow: 0 18px 35px rgba(255,153,51,0.55);
     }
 
-    /* Success Message - Toast style */
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
     .success {
       display: none;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--success);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 1000;
-      border-left: 4px solid #ff9933;
-      font-weight: 500;
+      text-align: center;
+      margin-top: 20px;
+      color: #0b6e4f;
+      font-weight: 600;
+      background: #e3f7ec;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid #0b6e4f;
     }
 
-    /* Badge for tracking ID */
-    .tracking-badge {
-      background: #e3f7ec;
-      color: #0b6e4f;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 14px;
-      display: inline-block;
-      margin-top: 10px;
+    .tracking-id {
+      font-size: 20px;
+      font-weight: 700;
+      color: #003366;
+      margin: 15px 0 10px;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      font-family: monospace;
+      border: 1px solid #ffcc99;
+    }
+
+    .photo-note {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-top: 5px;
+    }
+
+    .photo-note i {
+      color: #ff9933;
     }
 
     @media(max-width: 768px) {
-      .header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-        padding: 15px;
-      }
-      
-      .header-left {
-        flex-direction: column;
-      }
-      
-      .stats {
-        flex-direction: column;
-        padding: 15px;
-      }
-      
       .row {
         flex-direction: column;
-        gap: 0;
       }
       
-      .container {
-        padding: 0 15px;
-      }
-      
-      .card {
-        padding: 20px;
+      header {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 10px;
       }
     }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <img src="amc_logo.png" alt="AMC Logo" class="emblem-logo">
-    <div>अमरावती महानगरपालिका</div>
+<header>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <img src="amc-logo.png" alt="AMC Logo" style="width:42px; height:42px; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div style="display: none; width:42px; height:42px; background: #ff9933; border-radius: 8px; align-items: center; justify-content: center; font-weight: bold; color: #003366;">AMC</div>
+    <div class="logo">
+      <i class="fas fa-shield-alt"></i> अमरावती महानगरपालिका
+    </div>
   </div>
-  <div>
-    <a href="index.html" class="header-btn">🏠 Dashboard</a>
-    <a href="#" class="header-btn">📊 Reports</a>
-  </div>
-</div>
 
-<!-- Stats Section - Matching original dashboard -->
-<div class="stats">
-  <div class="stat-card">
-    <h2 id="activeIssues">0</h2>
-    <div class="stat-title">Active Issues</div>
+  <div>
+    <a href="index.html" class="header-btn">Home</a>
+    <a href="tracker.html" class="header-btn">Track</a>
   </div>
-  <div class="stat-card">
-    <h2 id="pendingReview">0</h2>
-    <div class="stat-title">Pending Review</div>
-  </div>
-  <div class="stat-card">
-    <h2 id="resolvedToday">0</h2>
-    <div class="stat-title">Resolved Today</div>
-  </div>
-</div>
+</header>
 
 <div class="container">
-  <div class="page-header">
-    <h1 class="page-title">📋 Report a Civic Issue</h1>
-    <p class="page-subtitle">
-      Help us improve city services by reporting issues in your area. All reports are tracked and monitored.
-    </p>
-  </div>
-
-  <!-- Alert Banner - Shows for demo purposes -->
-  <div class="alert-banner" id="formAlert" style="display: none;">
-    ⚠️ Please fill all required fields before submitting
-  </div>
+  <h1 class="page-title">Report a Civic Issue</h1>
+  <p class="page-subtitle">
+    Help us improve city services by reporting issues in your area.
+  </p>
 
   <div class="card">
     <form id="issueForm">
       <div class="row">
         <div class="form-group">
-          <label>👤 Full Name</label>
-          <input type="text" id="name" placeholder="Enter your full name" required>
+          <label>Name</label>
+          <input type="text" id="name" placeholder="Enter your name" required>
         </div>
 
         <div class="form-group">
-          <label>📱 Mobile Number</label>
-          <input type="tel" id="mobile" placeholder="Enter 10-digit mobile" required>
+          <label>Mobile No</label>
+          <input type="tel" id="mobile" placeholder="Enter mobile number" required>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label>Issue Category</label>
+        <select id="category" required>
+          <option value="">Select issue type</option>
+          <option>Garbage / Sanitation</option>
+          <option>Water Leakage / Shortage</option>
+          <option>Potholes / Road Damage</option>
+          <option>Streetlight Not Working</option>
+          <option>Drainage / Sewage</option>
+        </select>
       </div>
 
       <div class="row">
         <div class="form-group">
-          <label>📌 Issue Category</label>
-          <select id="category" required>
-            <option value="">Select issue type</option>
-            <option value="Garbage">🗑️ Garbage / Sanitation</option>
-            <option value="Water">💧 Water Leakage / Shortage</option>
-            <option value="Road">🛣️ Potholes / Road Damage</option>
-            <option value="Streetlight">💡 Streetlight Not Working</option>
-            <option value="Drainage">🌊 Drainage / Sewage</option>
-          </select>
+          <label>Location</label>
+          <input type="text" id="location" placeholder="Auto-detect or enter location" required>
         </div>
 
         <div class="form-group">
-          <label>⚠️ Priority Level</label>
+          <label>Priority</label>
           <select id="priority" required>
-            <option value="Low">🟢 Low</option>
-            <option value="Medium">🟡 Medium</option>
-            <option value="High">🟠 High</option>
-            <option value="Emergency">🔴 Emergency</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+            <option>Emergency</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label>📍 Location</label>
-        <input type="text" id="location" placeholder="Auto-detecting location..." required>
-      </div>
-
-      <div class="form-group">
-        <label>📝 Description</label>
-        <textarea id="desc" rows="4" maxlength="300" placeholder="Describe the issue in detail..." required></textarea>
+        <label>Description</label>
+        <textarea id="desc" rows="4" maxlength="300" required></textarea>
         <div class="char-count" id="count">0 / 300</div>
       </div>
 
       <div class="form-group">
-        <label>📸 Upload or Capture Photo</label>
+        <label><i class="fas fa-camera"></i> Upload or Capture Photo (Optional)</label>
         <input type="file" accept="image/*" id="photo">
         <button type="button" id="openCamera" class="camera-btn">
-          📷 Take Live Photo
+          <i class="fas fa-camera"></i> Take Live Photo
         </button>
         <video id="camera" autoplay playsinline></video>
         <canvas id="canvas"></canvas>
         <img id="preview" class="image-preview">
+       
       </div>
 
       <div class="form-group toggle">
         <input type="checkbox" id="anonymous">
-        <label for="anonymous">Submit anonymously (your name and mobile won't be visible)</label>
+        <label for="anonymous">Submit anonymously</label>
       </div>
 
-      <button class="submit-btn" type="submit">✅ Submit Issue Report</button>
+      <button class="submit-btn" type="submit" id="submitBtn">
+        <i class="fas fa-paper-plane"></i> Submit Issue
+      </button>
+      
+      <div class="success" id="successMsg">
+        <i class="fas fa-check-circle" style="font-size: 24px;"></i>
+        <h3 style="margin: 10px 0;">Issue Submitted Successfully!</h3>
+        <div class="tracking-id" id="trackingId"></div>
+        <p style="margin-top: 15px;">Save this Tracking ID to check your complaint status.</p>
+        <a href="track.html" style="color: #1e4d7c; font-weight: 600; text-decoration: none;">
+          <i class="fas fa-search"></i> Track Your Complaint →
+        </a>
+      </div>
+
     </form>
   </div>
-</div>
-
-<!-- Success Toast -->
-<div class="success" id="successMsg">
-  ✅ Issue submitted successfully! Tracking ID: <span id="trackingId"></span>
 </div>
 
 <script>
@@ -484,36 +400,16 @@
     count.textContent = `${desc.value.length} / 300`;
   });
 
-  // Update stats (demo values)
-  document.getElementById('activeIssues').textContent = '24';
-  document.getElementById('pendingReview').textContent = '8';
-  document.getElementById('resolvedToday').textContent = '12';
-
-  // Image preview
-  document.getElementById('photo').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = document.getElementById('preview');
-        img.src = reader.result;
-        img.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  // Auto location
+  // Auto location (basic)
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       document.getElementById('location').value =
-        `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
-    }, () => {
-      document.getElementById('location').value = 'Location access denied';
+        `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
     });
   }
+</script>
 
-  // Camera functionality
+<script>
   const openCameraBtn = document.getElementById('openCamera');
   const video = document.getElementById('camera');
   const canvas = document.getElementById('canvas');
@@ -527,72 +423,187 @@
       stream = await navigator.mediaDevices.getUserMedia({ video: true });
       video.srcObject = stream;
       video.style.display = 'block';
-      openCameraBtn.innerHTML = "📸 Capture Photo";
+      openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Capture Photo';
       openCameraBtn.onclick = capturePhoto;
     } catch (err) {
-      alert("Camera access denied! Please check permissions.");
+      alert("Camera access denied!");
     }
   });
 
   function capturePhoto() {
     const ctx = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const imageData = canvas.toDataURL('image/png');
-    preview.src = imageData;
-    preview.style.display = 'block';
+    canvas.toBlob((blob) => {
+      const file = new File([blob], "camera-capture.jpg", { type: "image/jpeg" });
+      
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      photoInput.files = dataTransfer.files;
+      
+      preview.src = URL.createObjectURL(blob);
+      preview.style.display = 'block';
+    }, 'image/jpeg');
 
     // Stop camera
     stream.getTracks().forEach(track => track.stop());
     video.style.display = 'none';
-    openCameraBtn.innerHTML = "📷 Retake Photo";
-    openCameraBtn.onclick = () => {
-      preview.style.display = 'none';
-      openCameraBtn.innerHTML = "📷 Take Live Photo";
-      openCameraBtn.onclick = openCameraBtn.click;
-    };
+    openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Take Live Photo';
+    openCameraBtn.onclick = null;
   }
 
-  // Form submission
-  document.getElementById('issueForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    // Show alert if form invalid (simple validation)
-    const required = ['name', 'mobile', 'category', 'location', 'desc'];
-    let valid = true;
-    required.forEach(field => {
-      if (!document.getElementById(field).value) valid = false;
-    });
-
-    if (!valid) {
-      document.getElementById('formAlert').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('formAlert').style.display = 'none';
-      }, 3000);
-      return;
+  // File upload preview still works
+  photoInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
     }
-
-    // Generate tracking ID
-    const trackingId = "AMC-" + Date.now().toString().slice(-8);
-    
-    // Show success message
-    document.getElementById('trackingId').textContent = trackingId;
-    document.getElementById('successMsg').style.display = 'block';
-    
-    // Reset form
-    this.reset();
-    document.getElementById('preview').style.display = 'none';
-    document.getElementById('count').textContent = '0 / 300';
-    
-    // Hide success after 5 seconds
-    setTimeout(() => {
-      document.getElementById('successMsg').style.display = 'none';
-    }, 5000);
   });
 </script>
 
-</body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+/* ===============================
+   SUPABASE CONNECTION
+================================ */
+
+const SUPABASE_URL = "https://ibfeegtzehgspswvlyna.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliZmVlZ3R6ZWhnc3Bzd3ZseW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTY5ODAsImV4cCI6MjA4NzU5Mjk4MH0.I5CPOxe69SQ3O0qqb5A6Zx-pAWzLmZpXyu97mt9Zvag";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+/* ===============================
+   GET LATITUDE & LONGITUDE
+================================ */
+
+let latitude = null;
+let longitude = null;
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(position => {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+  });
+}
+
+
+/* ===============================
+   FORM SUBMIT
+================================ */
+
+document.getElementById('issueForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const submitBtn = document.getElementById('submitBtn');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  submitBtn.disabled = true;
+
+  try {
+    /* GET FORM VALUES */
+    const name = document.getElementById("name").value;
+    const mobile = document.getElementById("mobile").value;
+    const description = document.getElementById("desc").value;
+    const location = document.getElementById("location").value;
+    const category = document.getElementById("category").value;
+    const priority = document.getElementById("priority").value;
+    const anonymous = document.getElementById("anonymous").checked;
+
+    const fileInput = document.getElementById("photo");
+    const file = fileInput.files[0];
+
+    // Generate tracking ID
+    const tracking_id = "CC-" + Date.now();
+
+    /* ===============================
+       UPLOAD IMAGE TO STORAGE (OPTIONAL)
+    ============================== */
+
+    let imageUrl = null;
+
+    if (file) {
+      try {
+        // Clean filename
+        const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        const fileName = `complaint_${tracking_id}_${cleanFileName}`;
+
+        console.log("Uploading photo:", fileName);
+
+        const { error } = await sb.storage
+          .from("complaint-photos")
+          .upload(fileName, file);
+
+        if (!error) {
+          const { data: urlData } = sb.storage
+            .from("complaint-photos")
+            .getPublicUrl(fileName);
+
+          imageUrl = urlData.publicUrl;
+          console.log("Photo uploaded:", imageUrl);
+        } else {
+          console.log("Image upload failed (optional, continuing)", error);
+        }
+      } catch (uploadErr) {
+        console.log("Upload error (optional, continuing)", uploadErr);
+      }
+    }
+
+    /* ===============================
+       INSERT INTO DATABASE
+    ============================== */
+
+    const { error: dbError } = await sb
+      .from("allcomplaints")
+      .insert([{
+        tracking_id: tracking_id,
+        name: anonymous ? 'Anonymous' : name,
+        mobile: mobile,
+        category: category,
+        priority: priority,
+        description: description,
+        location: location,
+        latitude: latitude,
+        longitude: longitude,
+        photo_url: imageUrl,
+        anonymous: anonymous,
+        status: 'Pending',
+        created_at: new Date().toISOString()
+      }]);
+
+    if (dbError) {
+      console.error("Database insert error:", dbError);
+      throw dbError;
+    }
+
+    /* SUCCESS */
+    document.getElementById('trackingId').textContent = tracking_id;
+    document.getElementById('successMsg').style.display = 'block';
+
+    document.getElementById("issueForm").reset();
+    document.getElementById('preview').style.display = 'none';
+    document.getElementById('count').textContent = "0 / 300";
+
+    // Scroll to success message
+    document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth' });
+
+  } catch (err) {
+    console.log(err);
+    alert("Error submitting complaint. Please try again.");
+  } finally {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+});
+</script>
+
+</body>
 </html>
