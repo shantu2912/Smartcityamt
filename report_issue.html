@@ -250,15 +250,16 @@
     }
 
     .tracking-id {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 700;
       color: #003366;
       margin: 15px 0 10px;
-      padding: 12px;
+      padding: 15px;
       background: white;
       border-radius: 8px;
       font-family: monospace;
-      border: 1px solid #ffcc99;
+      border: 2px dashed #ff9933;
+      letter-spacing: 1px;
     }
 
     .photo-note {
@@ -365,7 +366,7 @@
         <video id="camera" autoplay playsinline></video>
         <canvas id="canvas"></canvas>
         <img id="preview" class="image-preview">
-       
+        
       </div>
 
       <div class="form-group toggle">
@@ -378,95 +379,18 @@
       </button>
       
       <div class="success" id="successMsg">
-        <i class="fas fa-check-circle" style="font-size: 24px;"></i>
-        <h3 style="margin: 10px 0;">Issue Submitted Successfully!</h3>
+        <i class="fas fa-check-circle" style="font-size: 32px; color: #0b6e4f;"></i>
+        <h3 style="margin: 15px 0 5px; color: #0b6e4f;">Issue Submitted Successfully!</h3>
         <div class="tracking-id" id="trackingId"></div>
-        <p style="margin-top: 15px;">Save this Tracking ID to check your complaint status.</p>
-        <a href="track.html" style="color: #1e4d7c; font-weight: 600; text-decoration: none;">
-          <i class="fas fa-search"></i> Track Your Complaint →
+        <p style="margin: 15px 0; font-size: 14px;">Save this Tracking ID to check your complaint status.</p>
+        <a href="tracker.html" style="display: inline-block; background: #1e4d7c; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 600;">
+          <i class="fas fa-search"></i> Track Your Complaint
         </a>
       </div>
 
     </form>
   </div>
 </div>
-
-<script>
-  // Character counter
-  const desc = document.getElementById('desc');
-  const count = document.getElementById('count');
-
-  desc.addEventListener('input', () => {
-    count.textContent = `${desc.value.length} / 300`;
-  });
-
-  // Auto location (basic)
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      document.getElementById('location').value =
-        `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
-    });
-  }
-</script>
-
-<script>
-  const openCameraBtn = document.getElementById('openCamera');
-  const video = document.getElementById('camera');
-  const canvas = document.getElementById('canvas');
-  const preview = document.getElementById('preview');
-  const photoInput = document.getElementById('photo');
-
-  let stream;
-
-  openCameraBtn.addEventListener('click', async () => {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      video.srcObject = stream;
-      video.style.display = 'block';
-      openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Capture Photo';
-      openCameraBtn.onclick = capturePhoto;
-    } catch (err) {
-      alert("Camera access denied!");
-    }
-  });
-
-  function capturePhoto() {
-    const ctx = canvas.getContext('2d');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    canvas.toBlob((blob) => {
-      const file = new File([blob], "camera-capture.jpg", { type: "image/jpeg" });
-      
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      photoInput.files = dataTransfer.files;
-      
-      preview.src = URL.createObjectURL(blob);
-      preview.style.display = 'block';
-    }, 'image/jpeg');
-
-    // Stop camera
-    stream.getTracks().forEach(track => track.stop());
-    video.style.display = 'none';
-    openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Take Live Photo';
-    openCameraBtn.onclick = null;
-  }
-
-  // File upload preview still works
-  photoInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        preview.src = reader.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -475,26 +399,83 @@
    SUPABASE CONNECTION
 ================================ */
 
-const SUPABASE_URL = "https://ibfeegtzehgspswvlyna.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliZmVlZ3R6ZWhnc3Bzd3ZseW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTY5ODAsImV4cCI6MjA4NzU5Mjk4MH0.I5CPOxe69SQ3O0qqb5A6Zx-pAWzLmZpXyu97mt9Zvag";
+const SUPABASE_URL = "https://kzxdxnxgouthsywbsnvl.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag";
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Character counter
+const desc = document.getElementById('desc');
+const count = document.getElementById('count');
 
-/* ===============================
-   GET LATITUDE & LONGITUDE
-================================ */
+desc.addEventListener('input', () => {
+  count.textContent = `${desc.value.length} / 300`;
+});
 
-let latitude = null;
-let longitude = null;
-
+// Auto location
 if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(position => {
-    latitude = position.coords.latitude;
-    longitude = position.coords.longitude;
+  navigator.geolocation.getCurrentPosition(pos => {
+    document.getElementById('location').value = 
+      `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
   });
 }
 
+// Camera functions
+const openCameraBtn = document.getElementById('openCamera');
+const video = document.getElementById('camera');
+const canvas = document.getElementById('canvas');
+const preview = document.getElementById('preview');
+const photoInput = document.getElementById('photo');
+let stream;
+
+openCameraBtn.addEventListener('click', async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    video.style.display = 'block';
+    openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Capture Photo';
+    openCameraBtn.onclick = capturePhoto;
+  } catch (err) {
+    alert("Camera access denied!");
+  }
+});
+
+function capturePhoto() {
+  const ctx = canvas.getContext('2d');
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  canvas.toBlob((blob) => {
+    const file = new File([blob], "camera-capture.jpg", { type: "image/jpeg" });
+    
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    photoInput.files = dataTransfer.files;
+    
+    preview.src = URL.createObjectURL(blob);
+    preview.style.display = 'block';
+  }, 'image/jpeg');
+
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+  video.style.display = 'none';
+  openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Take Live Photo';
+  openCameraBtn.onclick = null;
+}
+
+photoInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      preview.src = reader.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
 /* ===============================
    FORM SUBMIT
@@ -509,7 +490,7 @@ document.getElementById('issueForm').addEventListener('submit', async function(e
   submitBtn.disabled = true;
 
   try {
-    /* GET FORM VALUES */
+    // Get form values
     const name = document.getElementById("name").value;
     const mobile = document.getElementById("mobile").value;
     const description = document.getElementById("desc").value;
@@ -523,12 +504,10 @@ document.getElementById('issueForm').addEventListener('submit', async function(e
 
     // Generate tracking ID
     const tracking_id = "CC-" + Date.now();
+    console.log("Generated Tracking ID:", tracking_id);
 
-    /* ===============================
-       UPLOAD IMAGE TO STORAGE (OPTIONAL)
-    ============================== */
-
-    let imageUrl = null;
+    // Upload image to storage (optional)
+    let photo_url = null;
 
     if (file) {
       try {
@@ -538,56 +517,63 @@ document.getElementById('issueForm').addEventListener('submit', async function(e
 
         console.log("Uploading photo:", fileName);
 
-        const { error } = await sb.storage
+        const { error: uploadError } = await sb.storage
           .from("complaint-photos")
-          .upload(fileName, file);
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
-        if (!error) {
+        if (uploadError) {
+          console.log("Image upload failed (optional, continuing)", uploadError);
+        } else {
           const { data: urlData } = sb.storage
             .from("complaint-photos")
             .getPublicUrl(fileName);
 
-          imageUrl = urlData.publicUrl;
-          console.log("Photo uploaded:", imageUrl);
-        } else {
-          console.log("Image upload failed (optional, continuing)", error);
+          photo_url = urlData.publicUrl;
+          console.log("Photo uploaded:", photo_url);
         }
       } catch (uploadErr) {
         console.log("Upload error (optional, continuing)", uploadErr);
       }
     }
 
-    /* ===============================
-       INSERT INTO DATABASE
-    ============================== */
+    // Prepare data for insertion
+    const complaintData = {
+      tracking_id: tracking_id,
+      name: anonymous ? 'Anonymous' : name,
+      mobile: mobile,
+      category: category,
+      priority: priority,
+      description: description,
+      location: location,
+      photo_url: photo_url,
+      anonymous: anonymous,
+      status: 'Pending',
+      created_at: new Date().toISOString()
+    };
 
-    const { error: dbError } = await sb
+    console.log("Inserting complaint:", complaintData);
+
+    // Insert into database
+    const { data, error: dbError } = await sb
       .from("allcomplaints")
-      .insert([{
-        tracking_id: tracking_id,
-        name: anonymous ? 'Anonymous' : name,
-        mobile: mobile,
-        category: category,
-        priority: priority,
-        description: description,
-        location: location,
-        latitude: latitude,
-        longitude: longitude,
-        photo_url: imageUrl,
-        anonymous: anonymous,
-        status: 'Pending',
-        created_at: new Date().toISOString()
-      }]);
+      .insert([complaintData])
+      .select();
 
     if (dbError) {
       console.error("Database insert error:", dbError);
-      throw dbError;
+      throw new Error(dbError.message);
     }
 
-    /* SUCCESS */
+    console.log("Insert successful:", data);
+
+    // Show success message
     document.getElementById('trackingId').textContent = tracking_id;
     document.getElementById('successMsg').style.display = 'block';
 
+    // Reset form
     document.getElementById("issueForm").reset();
     document.getElementById('preview').style.display = 'none';
     document.getElementById('count').textContent = "0 / 300";
@@ -596,8 +582,8 @@ document.getElementById('issueForm').addEventListener('submit', async function(e
     document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth' });
 
   } catch (err) {
-    console.log(err);
-    alert("Error submitting complaint. Please try again.");
+    console.error("Error submitting complaint:", err);
+    alert("Error submitting complaint: " + err.message);
   } finally {
     submitBtn.innerHTML = originalText;
     submitBtn.disabled = false;
