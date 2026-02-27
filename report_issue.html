@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Report Issue | CivicConnect</title>
+  <title>Report Issue | Municipal Control Center</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Google Font -->
@@ -10,134 +10,185 @@
 
   <style>
     :root {
-      --primary: #fa8314;
-      --primary-dark: #e7eaf5;
-      --accent: #f59e0b;
-      --accent-dark: #d97706;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --radius: 14px;
+      --primary: #1e4d7c;
+      --success: #0b6e4f;
+      --warning: #b6581c;
+      --danger: #a11d2b;
+      --dark: #0a1c2f;
+      --light: #f4f7fc;
     }
 
     * {
       box-sizing: border-box;
       font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      background: #eef2f7;
+      color: #1a2b3c;
     }
 
-    .camera-btn {
-  margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: none;
-  background: var(--primary);
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-video {
-  margin-top: 10px;
-  width: 100%;
-  max-width: 320px;
-  border-radius: 12px;
-  display: none;
-}
-
-canvas {
-  display: none;
-}
-
-
-    /* Header */
-    header {
-      background: white;
-      padding: 16px 40px;
+    /* Header - Matching original */
+    .header {
+      background: linear-gradient(135deg, #003366, #001f4a);
+      color: white;
+      padding: 18px 30px;
+      font-size: 22px;
+      font-weight: 600;
+      border-bottom: 4px solid #ff9933;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      justify-content: space-between;
     }
 
-    .logo {
-  font-size: 22px;
-  font-weight: 700;
-  color: black;
-}
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .emblem-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 4px;
+    }
 
     .header-btn {
       padding: 10px 18px;
-      border-radius: 10px;
-      background: var(--primary);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.15);
       color: white;
       text-decoration: none;
       font-weight: 500;
-      margin-left: 10px;
+      font-size: 14px;
+      transition: all 0.2s;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .report-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    .header-btn:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
     }
 
-    /* Page Layout */
+    /* Alert Banner - Matching original style */
+    .alert-banner {
+      background: #fff1f0;
+      border-left: 4px solid #a11d2b;
+      color: #a11d2b;
+      padding: 12px 30px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* Stats Cards - Matching original */
+    .stats {
+      display: flex;
+      gap: 20px;
+      padding: 20px 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      min-width: 200px;
+      flex: 1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card h2 {
+      margin: 0;
+      font-size: 28px;
+      color: #003366;
+    }
+
+    .stat-title {
+      color: #5a6f8c;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Main Container */
     .container {
       max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-.page-title {
-  font-size: 30px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: black;
-}
-    .page-subtitle {
-      color: var(--muted);
-      margin-bottom: 30px;
+      margin: 30px auto;
+      padding: 0 30px;
     }
 
-    .card {
-      background: var(--card);
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(248, 193, 14, 0.986);
-    }
-
-    .form-group {
+    .page-header {
       margin-bottom: 20px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #003366;
+      margin-bottom: 5px;
+    }
+
+    .page-subtitle {
+      color: #5a6f8c;
+      font-size: 14px;
+    }
+
+    /* Card - Matching table-box style */
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 30px;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 24px;
     }
 
     label {
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: block;
+      color: #1e3a5f;
+      font-size: 14px;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #f8cc7c;
+      padding: 12px 14px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
       outline: none;
       font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 77, 124, 0.1);
+      background: white;
     }
 
     textarea {
-      resize: none;
+      resize: vertical;
+      min-height: 100px;
     }
 
     .char-count {
       font-size: 12px;
-      color: var(--muted);
+      color: #5a6f8c;
       text-align: right;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .row {
@@ -149,163 +200,279 @@ canvas {
       flex: 1;
     }
 
+    /* Camera Button - Matching action-btn style */
+    .camera-btn {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .camera-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      background: #1e5a8c;
+    }
+
+    /* Video and Preview */
+    video {
+      margin-top: 15px;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 8px;
+      display: none;
+      border: 2px solid #cbd5e1;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .image-preview {
+      margin-top: 15px;
+      max-width: 200px;
+      border-radius: 8px;
+      display: none;
+      border: 2px solid #cbd5e1;
+      padding: 4px;
+    }
+
+    /* File Input Styling */
+    input[type="file"] {
+      padding: 8px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+    }
+
+    /* Toggle Switch Style */
     .toggle {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 14px;
+      background: #f8fafc;
+      padding: 12px 16px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
     }
 
-    .toggle input {
-      width: auto;
+    .toggle input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin: 0;
     }
 
-    .image-preview {
-      margin-top: 10px;
-      max-width: 200px;
-      border-radius: 10px;
-      display: none;
+    .toggle label {
+      margin: 0;
+      font-weight: 500;
+      color: #1a2b3c;
     }
 
+    /* Submit Button - Matching deploy button style */
     .submit-btn {
       width: 100%;
       padding: 14px;
-      border-radius: 12px;
+      border-radius: 6px;
       border: none;
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      background: var(--success);
       color: white;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(11, 110, 79, 0.3);
+      background: #0d8a5c;
+    }
+
+    /* Success Message - Toast style */
+    .success {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--success);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      border-left: 4px solid #ff9933;
+      font-weight: 500;
+    }
+
+    /* Badge for tracking ID */
+    .tracking-badge {
+      background: #e3f7ec;
+      color: #0b6e4f;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-block;
       margin-top: 10px;
     }
 
-    .success {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-      color: green;
-      font-weight: 600;
-    }
-
     @media(max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 15px;
+      }
+      
+      .header-left {
+        flex-direction: column;
+      }
+      
+      .stats {
+        flex-direction: column;
+        padding: 15px;
+      }
+      
       .row {
         flex-direction: column;
+        gap: 0;
+      }
+      
+      .container {
+        padding: 0 15px;
+      }
+      
+      .card {
+        padding: 20px;
       }
     }
   </style>
 </head>
 <body>
-<header>
-  <div style="display:flex; align-items:center; gap:12px;">
-    
-    <img src="amc_logo.png" style="
-      width:42px;
-      height:42px;
-      object-fit:contain;
-    ">
 
-    <div class="logo" style="color:black;">
-      CivicConnect Amravati
-    </div>
-
+<div class="header">
+  <div class="header-left">
+    <img src="amc_logo.png" alt="AMC Logo" class="emblem-logo">
+    <div>अमरावती महानगरपालिका भविष्यमान जोखीम नियंत्रण केंद्र</div>
   </div>
-
   <div>
-    <a href="index.html" class="header-btn">Home</a>
-
+    <a href="index.html" class="header-btn">🏠 Dashboard</a>
+    <a href="#" class="header-btn">📊 Reports</a>
   </div>
-</header>
+</div>
+
+<!-- Stats Section - Matching original dashboard -->
+<div class="stats">
+  <div class="stat-card">
+    <h2 id="activeIssues">0</h2>
+    <div class="stat-title">Active Issues</div>
+  </div>
+  <div class="stat-card">
+    <h2 id="pendingReview">0</h2>
+    <div class="stat-title">Pending Review</div>
+  </div>
+  <div class="stat-card">
+    <h2 id="resolvedToday">0</h2>
+    <div class="stat-title">Resolved Today</div>
+  </div>
+</div>
 
 <div class="container">
-  <h1 class="page-title">Report a Civic Issue</h1>
-  <p class="page-subtitle">
-    Help us improve city services by reporting issues in your area.
-  </p>
+  <div class="page-header">
+    <h1 class="page-title">📋 Report a Civic Issue</h1>
+    <p class="page-subtitle">
+      Help us improve city services by reporting issues in your area. All reports are tracked and monitored.
+    </p>
+  </div>
+
+  <!-- Alert Banner - Shows for demo purposes -->
+  <div class="alert-banner" id="formAlert" style="display: none;">
+    ⚠️ Please fill all required fields before submitting
+  </div>
 
   <div class="card">
     <form id="issueForm">
-<div class="row">
+      <div class="row">
+        <div class="form-group">
+          <label>👤 Full Name</label>
+          <input type="text" id="name" placeholder="Enter your full name" required>
+        </div>
 
-  <div class="form-group">
-    <label>Name</label>
-    <input type="text" id="name" placeholder="Enter your name" required>
-  </div>
-
-  <div class="form-group">
-    <label>Mobile No</label>
-    <input type="tel" id="mobile" placeholder="Enter mobile number" required>
-  </div>
-
-</div>
-
-
-
-      <div class="form-group">
-        <label>Issue Category</label>
-        <select required>
-          <option value="">Select issue type</option>
-          <option>Garbage / Sanitation</option>
-          <option>Water Leakage / Shortage</option>
-          <option>Potholes / Road Damage</option>
-          <option>Streetlight Not Working</option>
-          <option>Drainage / Sewage</option>
-        </select>
+        <div class="form-group">
+          <label>📱 Mobile Number</label>
+          <input type="tel" id="mobile" placeholder="Enter 10-digit mobile" required>
+        </div>
       </div>
 
       <div class="row">
         <div class="form-group">
-          <label>Location</label>
-          <input type="text" id="location" placeholder="Auto-detect or enter location" required>
+          <label>📌 Issue Category</label>
+          <select id="category" required>
+            <option value="">Select issue type</option>
+            <option value="Garbage">🗑️ Garbage / Sanitation</option>
+            <option value="Water">💧 Water Leakage / Shortage</option>
+            <option value="Road">🛣️ Potholes / Road Damage</option>
+            <option value="Streetlight">💡 Streetlight Not Working</option>
+            <option value="Drainage">🌊 Drainage / Sewage</option>
+          </select>
         </div>
 
         <div class="form-group">
-          <label>Priority</label>
-          <select required>
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-            <option>Emergency</option>
+          <label>⚠️ Priority Level</label>
+          <select id="priority" required>
+            <option value="Low">🟢 Low</option>
+            <option value="Medium">🟡 Medium</option>
+            <option value="High">🟠 High</option>
+            <option value="Emergency">🔴 Emergency</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Description</label>
-        <textarea id="desc" rows="4" maxlength="300" required></textarea>
+        <label>📍 Location</label>
+        <input type="text" id="location" placeholder="Auto-detecting location..." required>
+      </div>
+
+      <div class="form-group">
+        <label>📝 Description</label>
+        <textarea id="desc" rows="4" maxlength="300" placeholder="Describe the issue in detail..." required></textarea>
         <div class="char-count" id="count">0 / 300</div>
       </div>
 
-      
-
       <div class="form-group">
-  <label>Upload or Capture Photo</label>
-
-  <input type="file" accept="image/*" id="photo" required>
-
-  <button type="button" id="openCamera" class="camera-btn">
-    📷 Take Live Photo
-  </button>
-
-  <video id="camera" autoplay playsinline></video>
-  <canvas id="canvas"></canvas>
-
-  <img id="preview" class="image-preview">
-</div>
-
+        <label>📸 Upload or Capture Photo</label>
+        <input type="file" accept="image/*" id="photo">
+        <button type="button" id="openCamera" class="camera-btn">
+          📷 Take Live Photo
+        </button>
+        <video id="camera" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <img id="preview" class="image-preview">
+      </div>
 
       <div class="form-group toggle">
         <input type="checkbox" id="anonymous">
-        <label for="anonymous">Submit anonymously</label>
+        <label for="anonymous">Submit anonymously (your name and mobile won't be visible)</label>
       </div>
 
-      <button class="submit-btn" type="submit">Submit Issue</button>
-      <div class="success" id="successMsg">
-        ✅ Issue submitted successfully! Tracking ID generated.
-      </div>
-
+      <button class="submit-btn" type="submit">✅ Submit Issue Report</button>
     </form>
   </div>
+</div>
+
+<!-- Success Toast -->
+<div class="success" id="successMsg">
+  ✅ Issue submitted successfully! Tracking ID: <span id="trackingId"></span>
 </div>
 
 <script>
@@ -316,6 +483,11 @@ canvas {
   desc.addEventListener('input', () => {
     count.textContent = `${desc.value.length} / 300`;
   });
+
+  // Update stats (demo values)
+  document.getElementById('activeIssues').textContent = '24';
+  document.getElementById('pendingReview').textContent = '8';
+  document.getElementById('resolvedToday').textContent = '12';
 
   // Image preview
   document.getElementById('photo').addEventListener('change', e => {
@@ -331,17 +503,17 @@ canvas {
     }
   });
 
-  // Auto location (basic)
+  // Auto location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       document.getElementById('location').value =
         `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
+    }, () => {
+      document.getElementById('location').value = 'Location access denied';
     });
   }
 
-</script>
-
-<script>
+  // Camera functionality
   const openCameraBtn = document.getElementById('openCamera');
   const video = document.getElementById('camera');
   const canvas = document.getElementById('canvas');
@@ -355,10 +527,10 @@ canvas {
       stream = await navigator.mediaDevices.getUserMedia({ video: true });
       video.srcObject = stream;
       video.style.display = 'block';
-      openCameraBtn.textContent = "📸 Capture Photo";
+      openCameraBtn.innerHTML = "📸 Capture Photo";
       openCameraBtn.onclick = capturePhoto;
     } catch (err) {
-      alert("Camera access denied!");
+      alert("Camera access denied! Please check permissions.");
     }
   });
 
@@ -375,174 +547,51 @@ canvas {
     // Stop camera
     stream.getTracks().forEach(track => track.stop());
     video.style.display = 'none';
-
-    // Make file input optional once live photo taken
-    photoInput.required = false;
+    openCameraBtn.innerHTML = "📷 Retake Photo";
+    openCameraBtn.onclick = () => {
+      preview.style.display = 'none';
+      openCameraBtn.innerHTML = "📷 Take Live Photo";
+      openCameraBtn.onclick = openCameraBtn.click;
+    };
   }
 
-  // File upload preview still works
-  photoInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        preview.src = reader.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-</script>
+  // Form submission
+  document.getElementById('issueForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    // Show alert if form invalid (simple validation)
+    const required = ['name', 'mobile', 'category', 'location', 'desc'];
+    let valid = true;
+    required.forEach(field => {
+      if (!document.getElementById(field).value) valid = false;
+    });
 
-<script>
-/* ===============================
-   SUPABASE CONNECTION
-================================ */
-
-const SUPABASE_URL = "https://ibfeegtzehgspswvlyna.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliZmVlZ3R6ZWhnc3Bzd3ZseW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTY5ODAsImV4cCI6MjA4NzU5Mjk4MH0.I5CPOxe69SQ3O0qqb5A6Zx-pAWzLmZpXyu97mt9Zvag";
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-/* ===============================
-   GET LATITUDE & LONGITUDE
-================================ */
-
-let latitude = null;
-let longitude = null;
-
-if (navigator.geolocation) {
-
-  navigator.geolocation.getCurrentPosition(position => {
-
-    latitude = position.coords.latitude;
-    longitude = position.coords.longitude;
-
-  });
-
-}
-
-
-/* ===============================
-   FORM SUBMIT
-================================ */
-
-document.getElementById('issueForm').addEventListener('submit', async function(e)
-{
-
-  e.preventDefault();
-
-  try {
-
-    /* GET FORM VALUES */
-
-    const name = document.getElementById("name").value;
-    const mobile = document.getElementById("mobile").value;
-    const description = document.getElementById("desc").value;
-    const location = document.getElementById("location").value;
-    const category = document.querySelector("select").value;
-
-    const fileInput = document.getElementById("photo");
-    const file = fileInput.files[0];
-
-
-    /* ===============================
-       UPLOAD IMAGE TO STORAGE
-    ============================== */
-
-    let imageUrl = null;
-
-    if(file)
-    {
-
-      const fileName =
-        "complaint_" +
-        Date.now() +
-        "_" +
-        file.name;
-
-
-      const { data, error } =
-        await supabase.storage
-        .from("complaints")
-        .upload(fileName, file);
-
-
-      if(error)
-      {
-        alert("Image upload failed");
-        console.log(error);
-        return;
-      }
-
-
-      const { data: urlData } =
-        supabase.storage
-        .from("complaints")
-        .getPublicUrl(fileName);
-
-
-      imageUrl = urlData.publicUrl;
-
-    }
-
-
-    /* ===============================
-       INSERT INTO DATABASE
-    ============================== */
-
-    const { error: dbError } =
-      await supabase
-      .from("complaints")
-      .insert([
-      {
-        name: name,
-        mobile: mobile,
-        category: category,
-        description: description,
-        location: location,
-        latitude: latitude,
-        longitude: longitude,
-        image_url: imageUrl
-      }
-      ]);
-
-
-    if(dbError)
-    {
-      alert("Database insert failed");
-      console.log(dbError);
+    if (!valid) {
+      document.getElementById('formAlert').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('formAlert').style.display = 'none';
+      }, 3000);
       return;
     }
 
-
-    /* SUCCESS */
-
+    // Generate tracking ID
+    const trackingId = "AMC-" + Date.now().toString().slice(-8);
+    
+    // Show success message
+    document.getElementById('trackingId').textContent = trackingId;
     document.getElementById('successMsg').style.display = 'block';
-
-    document.getElementById("issueForm").reset();
-
+    
+    // Reset form
+    this.reset();
     document.getElementById('preview').style.display = 'none';
-
-    document.getElementById('count').textContent = "0 / 300";
-
-
-  }
-  catch(err)
-  {
-    console.log(err);
-    alert("Error occurred");
-  }
-
-});
+    document.getElementById('count').textContent = '0 / 300';
+    
+    // Hide success after 5 seconds
+    setTimeout(() => {
+      document.getElementById('successMsg').style.display = 'none';
+    }, 5000);
+  });
 </script>
-
 
 </body>
 </html>

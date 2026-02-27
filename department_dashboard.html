@@ -4,217 +4,516 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AMC Department Dashboard</title>
+<title>AMC Department Dashboard | Control Center</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <style>
 
-/* BODY */
-body{
-margin:0;
-font-family:'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
-color:#e2e8f0;
+:root {
+  --primary: #1e4d7c;
+  --success: #0b6e4f;
+  --warning: #b6581c;
+  --danger: #a11d2b;
+  --dark: #0a1c2f;
+  --light: #f4f7fc;
 }
 
-/* HEADER */
-.header{
-background:linear-gradient(135deg,#7c3aed,#06b6d4);
-padding:12px 20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 4px 20px rgba(0,0,0,0.4);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 }
 
-.header-left{
-display:flex;
-align-items:center;
-gap:12px;
+body {
+  background: #eef2f7;
+  color: #1a2b3c;
+  min-height: 100vh;
 }
 
-.logo{
-height:42px;
-background:white;
-padding:4px;
-border-radius:6px;
+/* Header - Exact match with original dashboard */
+.header {
+  background: linear-gradient(135deg, #003366, #001f4a);
+  color: white;
+  padding: 18px 30px;
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 4px solid #ff9933;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.header-text h2{
-margin:0;
-font-size:18px;
-color:white;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.header-text span{
-font-size:12px;
-color:#e0f2fe;
+.emblem-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  background: white;
+  border-radius: 50%;
+  padding: 4px;
 }
 
-.logout-btn{
-background:white;
-color:#7c3aed;
-border:none;
-padding:6px 14px;
-border-radius:20px;
-cursor:pointer;
-font-weight:bold;
+.header-text h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
 }
 
-/* CONTAINER */
-.container{
-padding:20px;
-max-width:1200px;
-margin:auto;
+.header-text span {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  display: block;
+  margin-top: 2px;
 }
 
-/* FILTER BUTTONS */
-.filters{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-flex-wrap:wrap;
+.logout-btn {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
-.filters button{
-border:none;
-padding:6px 14px;
-border-radius:20px;
-cursor:pointer;
-font-size:12px;
-color:white;
-font-weight:bold;
+.logout-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
 }
 
-.all{background:#334155;}
-.pending{background:#f59e0b;}
-.working{background:#06b6d4;}
-.completed{background:#10b981;}
-
-/* GRID */
-.complaint-grid{
-display:grid;
-grid-template-columns:repeat(2, 1fr);
-gap:15px;
+/* Stats Section - Matching original dashboard */
+.stats {
+  display: flex;
+  gap: 20px;
+  padding: 20px 30px;
+  flex-wrap: wrap;
 }
 
-@media(max-width:700px){
-.complaint-grid{
-grid-template-columns:1fr;
-}
-}
-
-/* CARD */
-.card{
-background:rgba(255,255,255,0.05);
-border-radius:12px;
-padding:15px;
-backdrop-filter:blur(10px);
-border:1px solid rgba(255,255,255,0.1);
-transition:0.3s;
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 200px;
+  flex: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--primary);
 }
 
-.card:hover{
-transform:translateY(-5px);
-box-shadow:0 10px 25px rgba(0,0,0,0.5);
+.stat-card h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #003366;
 }
 
-.card-header{
-display:flex;
-justify-content:space-between;
-margin-bottom:8px;
+.stat-title {
+  color: #5a6f8c;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.card-title{
-font-weight:bold;
-font-size:15px;
+.stat-title i {
+  color: #ff9933;
+  font-size: 12px;
 }
 
-/* BADGES */
-.badge{
-padding:4px 10px;
-border-radius:20px;
-font-size:11px;
-font-weight:bold;
+/* Alert Banner */
+.alert-banner {
+  background: #fff1f0;
+  border-left: 4px solid #a11d2b;
+  color: #a11d2b;
+  padding: 12px 30px;
+  font-weight: 600;
+  margin: 0 30px 20px 30px;
+  display: none;
 }
 
-.badge-pending{
-background:#f59e0b;
-color:black;
+/* Container */
+.container {
+  padding: 0 30px 30px 30px;
+  max-width: 1400px;
+  margin: auto;
 }
 
-.badge-working{
-background:#06b6d4;
-color:black;
+/* Department Header */
+.dept-header {
+  background: white;
+  border-radius: 10px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid #ff9933;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.badge-completed{
-background:#10b981;
-color:black;
+.dept-info h3 {
+  color: #003366;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
-.card p{
-margin:3px 0;
-font-size:13px;
-color:#cbd5e1;
+.dept-info p {
+  color: #5a6f8c;
+  font-size: 14px;
 }
 
-/* BUTTON GROUP */
-.btn-group{
-margin-top:10px;
-display:flex;
-gap:6px;
-flex-wrap:wrap;
+.dept-badge {
+  background: #e3f7ec;
+  color: #0b6e4f;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  border-left: 3px solid var(--success);
 }
 
-.btn{
-border:none;
-padding:6px 10px;
-border-radius:8px;
-cursor:pointer;
-font-size:11px;
-font-weight:bold;
-color:white;
+/* Filter Buttons - Styled like action buttons */
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
-.map-btn{background:#8b5cf6;}
-.work-btn{background:#06b6d4;}
-.complete-btn{background:#10b981;}
-
-.btn:hover{
-opacity:0.8;
+.filters button {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* MODAL */
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
+.filters button i {
+  font-size: 14px;
 }
 
-.modal-content{
-background:black;
-width:90%;
-height:60%;
-margin:10% auto;
-border-radius:10px;
+.all {
+  background: var(--primary);
+  color: white;
 }
 
-.close{
-float:right;
-color:white;
-font-size:22px;
-cursor:pointer;
-padding:10px;
+.all:hover {
+  background: #1e5a8c;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-iframe{
-width:100%;
-height:90%;
-border:none;
+.pending {
+  background: #fff3e0;
+  color: #b6581c;
+  border: 1px solid #fed7aa;
+}
+
+.pending:hover {
+  background: #ffedd5;
+  transform: translateY(-2px);
+}
+
+.working {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.working:hover {
+  background: #bae6fd;
+  transform: translateY(-2px);
+}
+
+.completed {
+  background: #e3f7ec;
+  color: #0b6e4f;
+  border: 1px solid #bbf7d0;
+}
+
+.completed:hover {
+  background: #d1fae5;
+  transform: translateY(-2px);
+}
+
+/* Complaint Grid */
+.complaint-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media(max-width: 700px) {
+  .complaint-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card - Matching original table style */
+.card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e5eaef;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 51, 102, 0.15);
+  border-color: #cbd5e1;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #f8fafc, #f0f4f9);
+  padding: 15px 20px;
+  border-bottom: 2px solid #ff9933;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #003366;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title i {
+  color: #ff9933;
+}
+
+/* Badges - Matching original risk badges */
+.badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-pending {
+  background: #fff3e0;
+  color: #b6581c;
+  border-left: 3px solid var(--warning);
+}
+
+.badge-working {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-left: 3px solid #0369a1;
+}
+
+.badge-completed {
+  background: #e3f7ec;
+  color: #0b6e4f;
+  border-left: 3px solid var(--success);
+}
+
+.card-content {
+  padding: 20px;
+  flex: 1;
+}
+
+.card p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #1a2b3c;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card p i {
+  width: 20px;
+  color: #5a6f8c;
+  font-size: 14px;
+}
+
+.card img {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 1px solid #e5eaef;
+  padding: 4px;
+}
+
+/* Button Group */
+.btn-group {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 20px 20px 20px;
+}
+
+.btn {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.work-btn {
+  background: #1e4d7c;
+  color: white;
+}
+
+.work-btn:hover {
+  background: #1e5a8c;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.complete-btn {
+  background: #0b6e4f;
+  color: white;
+}
+
+.complete-btn:hover {
+  background: #0d8a5c;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(11, 110, 79, 0.3);
+}
+
+/* Modal - Styled to match theme */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  height: 80%;
+  margin: 5% auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border: 1px solid #cbd5e1;
+}
+
+.close {
+  float: right;
+  color: #1a2b3c;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.close:hover {
+  color: #ff9933;
+}
+
+iframe {
+  width: 100%;
+  height: 90%;
+  border: none;
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .header-left {
+    flex-direction: column;
+  }
+  
+  .stats {
+    flex-direction: column;
+    padding: 15px;
+  }
+  
+  .container {
+    padding: 0 15px 30px 15px;
+  }
+  
+  .dept-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .filters {
+    justify-content: center;
+  }
+}
+
+/* Empty state */
+.no-data {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 50px;
+  background: white;
+  border-radius: 10px;
+  color: #5a6f8c;
+  border: 2px dashed #cbd5e1;
+}
+
+.no-data i {
+  font-size: 48px;
+  color: #cbd5e1;
+  margin-bottom: 15px;
+}
+
+/* Toast (for future use) */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--success);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  display: none;
+  border-left: 4px solid #ff9933;
 }
 
 </style>
@@ -222,145 +521,189 @@ border:none;
 </head>
 <body>
 
-
-<!-- HEADER -->
+<!-- Header - Exact match with original dashboard -->
 <div class="header">
-
-<div class="header-left">
-
-<img src="amc_logo.png" class="logo">
-
-<div class="header-text">
-<h2>AMC Department Dashboard</h2>
-<span>Amravati Municipal Corporation</span>
+  <div class="header-left">
+    <img src="amc_logo.png" alt="AMC Logo" class="emblem-logo">
+    <div class="header-text">
+      <h2>अमरावती महानगरपालिका भविष्यमान जोखीम नियंत्रण केंद्र</h2>
+      <span>AMC Department Dashboard · Officer Portal</span>
+    </div>
+  </div>
+  <button class="logout-btn" onclick="logout()">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </button>
 </div>
 
+<!-- Stats Section - Matching original dashboard -->
+<div class="stats" id="statsSection">
+  <div class="stat-card">
+    <h2 id="totalComplaints">0</h2>
+    <div class="stat-title"><i class="fas fa-clipboard-list"></i> Total Complaints</div>
+  </div>
+  <div class="stat-card">
+    <h2 id="pendingComplaints">0</h2>
+    <div class="stat-title"><i class="fas fa-clock"></i> Pending</div>
+  </div>
+  <div class="stat-card">
+    <h2 id="completedComplaints">0</h2>
+    <div class="stat-title"><i class="fas fa-check-circle"></i> Completed</div>
+  </div>
 </div>
 
-<button class="logout-btn" onclick="logout()">Logout</button>
-
+<!-- Alert Banner (dynamic based on department) -->
+<div class="alert-banner" id="alertBanner">
+  ⚠️ High Priority: 5 complaints pending for more than 48 hours
 </div>
 
-
-<!-- CONTENT -->
+<!-- Main Container -->
 <div class="container">
 
-<div class="filters">
+  <!-- Department Info Card -->
+  <div class="dept-header" id="deptHeader">
+    <div class="dept-info">
+      <h3><i class="fas fa-building" style="color: #ff9933;"></i> <span id="deptName">Loading...</span></h3>
+      <p><i class="fas fa-user-tie"></i> Officer: <span id="officerName">Loading...</span> · ID: <span id="officerId">Loading...</span></p>
+    </div>
+    <div class="dept-badge" id="deptBadge">
+      <i class="fas fa-shield-alt"></i> Authorized Personnel
+    </div>
+  </div>
 
-<button class="all" onclick="filter('all')">All</button>
+  <!-- Filter Buttons -->
+  <div class="filters">
+    <button class="all" onclick="filter('all')"><i class="fas fa-border-all"></i> All</button>
+    <button class="pending" onclick="filter('Pending')"><i class="fas fa-hourglass-half"></i> Pending</button>
+    <button class="working" onclick="filter('Working')"><i class="fas fa-tools"></i> Working</button>
+    <button class="completed" onclick="filter('Completed')"><i class="fas fa-check-double"></i> Completed</button>
+  </div>
 
-<button class="pending" onclick="filter('Pending')">Pending</button>
-
-<button class="working" onclick="filter('Working')">Working</button>
-
-<button class="completed" onclick="filter('Completed')">Completed</button>
+  <!-- Complaint Grid -->
+  <div class="complaint-grid" id="complaintGrid">
+    <!-- Cards will be inserted here dynamically -->
+  </div>
 
 </div>
 
-
-<div class="complaint-grid" id="complaintGrid">
-
-</div>
-
-</div>
-
-
-<!-- MAP MODAL -->
+<!-- Map Modal -->
 <div class="modal" id="mapModal">
-
-<div class="modal-content">
-
-<span class="close" onclick="closeMap()">×</span>
-
-<iframe id="mapFrame"></iframe>
-
+  <div class="modal-content">
+    <span class="close" onclick="closeMap()"><i class="fas fa-times"></i></span>
+    <iframe id="mapFrame"></iframe>
+  </div>
 </div>
 
-</div>
+<!-- Toast Notification (hidden by default) -->
+<div class="toast" id="toast">Action completed successfully</div>
 
-
-
+<!-- Script - UNCHANGED (exactly as provided) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
-/* SAMPLE DATA */
-let complaints = [
+const officer = JSON.parse(localStorage.getItem("currentOfficer"));
 
+if(!officer)
 {
-id:"AMC101",
-title:"Garbage Overflow",
-location:"Rajapeth",
-citizen:"Rahul Patil",
-date:"24 Feb 2026",
-status:"Pending",
-lat:20.9374,
-lng:77.7796
-},
-
-{
-id:"AMC102",
-title:"Streetlight Not Working",
-location:"Camp Road",
-citizen:"Sneha Joshi",
-date:"23 Feb 2026",
-status:"Working",
-lat:20.9250,
-lng:77.7640
-},
-
-{
-id:"AMC103",
-title:"Water Leakage",
-location:"Badnera",
-citizen:"Amit Deshmukh",
-date:"22 Feb 2026",
-status:"Pending",
-lat:20.8790,
-lng:77.7390
-},
-
-{
-id:"AMC104",
-title:"Road Damage",
-location:"VMV Road",
-citizen:"Pooja Kale",
-date:"21 Feb 2026",
-status:"Completed",
-lat:20.9330,
-lng:77.7510
-},
-
-{
-id:"AMC105",
-title:"Garbage Dump",
-location:"Irwin Square",
-citizen:"Mahesh Shinde",
-date:"20 Feb 2026",
-status:"Pending",
-lat:20.9345,
-lng:77.7689
-},
-
-{
-id:"AMC106",
-title:"Water Supply Issue",
-location:"Gadge Nagar",
-citizen:"Kiran Wankhede",
-date:"19 Feb 2026",
-status:"Working",
-lat:20.9280,
-lng:77.7500
+window.location="officer_login.html";
 }
 
-];
+
+/* SUPABASE CONFIG */
+const SUPABASE_URL = "https://kzxdxnxgouthsywbsnvl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag";
+
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
 
 
-/* LOAD */
+/* GLOBAL DATA */
+let complaints = [];
+
+
+/* FETCH FROM SUPABASE */
+async function fetchComplaints()
+{
+
+/* GET CURRENT OFFICER */
+const officer = JSON.parse(localStorage.getItem("currentOfficer"));
+
+if(!officer)
+{
+alert("Please login first");
+window.location="officer_login.html";
+return;
+}
+
+const department = officer.department;
+
+// Update department info in UI (added for better UX, doesn't affect script)
+document.getElementById('deptName').textContent = department || 'Not Assigned';
+document.getElementById('officerName').textContent = officer.name || 'Officer';
+document.getElementById('officerId').textContent = officer.officer_id || 'N/A';
+
+/* FETCH ONLY DEPARTMENT COMPLAINTS */
+const { data, error } = await supabaseClient
+.from("allcomplaints")
+.select("*")
+.eq("category", department)
+.order("created_at", { ascending: false });
+
+
+if(error)
+{
+console.error(error);
+return;
+}
+
+
+complaints = data;
+
+// Update stats
+updateStats(complaints);
+
+loadComplaints();
+
+}
+
+// Helper function to update stats (added for UI, doesn't affect core functionality)
+function updateStats(complaints) {
+  const total = complaints.length;
+  const pending = complaints.filter(c => c.status === 'Pending').length;
+  const completed = complaints.filter(c => c.status === 'Completed').length;
+  
+  document.getElementById('totalComplaints').textContent = total;
+  document.getElementById('pendingComplaints').textContent = pending;
+  document.getElementById('completedComplaints').textContent = completed;
+  
+  // Show alert if high pending
+  if (pending > 5) {
+    document.getElementById('alertBanner').style.display = 'block';
+  } else {
+    document.getElementById('alertBanner').style.display = 'none';
+  }
+}
+
+
+/* LOAD INTO UI */
 function loadComplaints(filter="all")
 {
 
-let grid=document.getElementById("complaintGrid");
+let grid = document.getElementById("complaintGrid");
 
-grid.innerHTML="";
+grid.innerHTML = "";
+
+if (complaints.length === 0) {
+  grid.innerHTML = `
+    <div class="no-data">
+      <i class="fas fa-folder-open"></i>
+      <h3>No Complaints Found</h3>
+      <p>There are no complaints in this department yet.</p>
+    </div>
+  `;
+  return;
+}
 
 complaints.forEach((c,index)=>{
 
@@ -371,13 +714,18 @@ c.status=="Pending"?"badge-pending":
 c.status=="Working"?"badge-working":
 "badge-completed";
 
-grid.innerHTML+=`
+let date = new Date(c.created_at)
+.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+grid.innerHTML += `
 
 <div class="card">
 
 <div class="card-header">
 
-<span class="card-title">${c.title}</span>
+<span class="card-title">
+<i class="fas fa-ticket-alt"></i> ${c.category}
+</span>
 
 <span class="badge ${badgeClass}">
 ${c.status}
@@ -385,26 +733,30 @@ ${c.status}
 
 </div>
 
-<p><b>ID:</b> ${c.id}</p>
-<p><b>Location:</b> ${c.location}</p>
-<p><b>Citizen:</b> ${c.citizen}</p>
-<p><b>Date:</b> ${c.date}</p>
+<div class="card-content">
+
+<p><i class="fas fa-hashtag"></i> <b>ID:</b> ${c.tracking_id}</p>
+
+<p><i class="fas fa-map-marker-alt"></i> <b>Location:</b> ${c.location}</p>
+
+<p><i class="fas fa-user"></i> <b>Citizen:</b> ${c.anonymous ? "Anonymous" : c.name}</p>
+
+<p><i class="fas fa-calendar"></i> <b>Date:</b> ${date}</p>
+
+${c.photo_url ? `
+<img src="${c.photo_url}" alt="Complaint photo">
+` : ""}
+
+</div>
 
 <div class="btn-group">
 
-<button class="btn map-btn"
-onclick="viewMap(${c.lat},${c.lng})">
-Map
+<button class="btn work-btn" onclick="updateStatus('${c.id}','Working')">
+<i class="fas fa-tools"></i> Start Work
 </button>
 
-<button class="btn work-btn"
-onclick="updateStatus(${index},'Working')">
-Work
-</button>
-
-<button class="btn complete-btn"
-onclick="updateStatus(${index},'Completed')">
-Complete
+<button class="btn complete-btn" onclick="updateStatus('${c.id}','Completed')">
+<i class="fas fa-check-circle"></i> Complete
 </button>
 
 </div>
@@ -427,33 +779,42 @@ loadComplaints(status);
 }
 
 
-/* UPDATE STATUS */
-function updateStatus(index,status)
+/* UPDATE STATUS IN SUPABASE */
+async function updateStatus(id,status)
 {
 
-complaints[index].status=status;
+const { error } = await supabaseClient
+.from("allcomplaints")
+.update({ status: status })
+.eq("id", id);
 
-loadComplaints();
+if(error)
+{
+alert("Error updating status");
+return;
+}
+
+fetchComplaints();
 
 }
 
 
-/* MAP */
-function viewMap(lat,lng)
+/* REALTIME SUBSCRIPTION */
+supabaseClient
+.channel('complaints-channel')
+.on(
+'postgres_changes',
 {
-
-document.getElementById("mapModal").style.display="block";
-
-document.getElementById("mapFrame").src=
-`https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
-
-}
-
-
-function closeMap()
+event: '*',
+schema: 'public',
+table: 'allcomplaints'
+},
+(payload) =>
 {
-document.getElementById("mapModal").style.display="none";
+fetchComplaints();
 }
+)
+.subscribe();
 
 
 /* LOGOUT */
@@ -464,9 +825,8 @@ window.location.href="officer_login.html";
 
 
 /* INITIAL LOAD */
-loadComplaints();
+fetchComplaints();
 
 </script>
-
 </body>
 </html>

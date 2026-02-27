@@ -4,480 +4,531 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AMC Officer Portal | CivicConnect Amravati</title>
+<title>AMC Officer Portal | Municipal Control Center</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-:root{
---primary:hsl(215,80%,45%);
---primary-light:hsl(215,80%,55%);
---accent:hsl(38,92%,50%);
---accent-dark:hsl(25,90%,45%);
---background:hsl(210,25%,98%);
---card:white;
---border:hsl(214,20%,90%);
+:root {
+  --primary: #1e4d7c;
+  --success: #0b6e4f;
+  --warning: #b6581c;
+  --danger: #a11d2b;
+  --dark: #0a1c2f;
+  --light: #f4f7fc;
 }
 
-body{
-margin:0;
-font-family:Inter;
-background:var(--background);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-
-/* HEADER */
-/* Modern Simple Header */
-
-.header {
-
-background: rgb(124, 255, 198);
-padding: 14px 0;
-border-bottom: 1px solid hsl(214, 20%, 90%);
-box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-transition: all 0.3s ease;
-
+body {
+  font-family: 'Inter', sans-serif;
+  background: #eef2f7;
+  color: #1a2b3c;
+  min-height: 100vh;
 }
 
-.header-container {
-
-max-width: 1200px;
-margin: auto;
-padding: 0 20px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-
-}
-
-
-
-
-/* Logo */
-
-.logo-text {
-
-font-family: "Plus Jakarta Sans", sans-serif;
-font-size: 18px;
-font-weight: 700;
-color: hsl(215, 80%, 45%);
-
-}
-
-/* Navigation */
-
-.nav a {
-
-color: hsl(215, 15%, 45%);
-text-decoration: none;
-font-size: 14px;
-font-weight: 500;
-margin: 0 12px;
-transition: 0.2s;
-
-}
-
-.nav a:hover {
-
-color: hsl(215, 80%, 45%);
-
-}
-
-/* Login Button */
-
-.login-btn {
-
-background: hsl(215, 80%, 45%);
-color: white;
-border: none;
-padding: 8px 18px;
-border-radius: 8px;
-font-size: 14px;
-font-weight: 600;
-transition: 0.2s;
-
-}
-
-.login-btn:hover {
-
-background: hsl(215, 80%, 55%);
-transform: translateY(-1px);
-
-}
-
-.header.scrolled {
-box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-
-
-
-.logo{
-font-family:"Plus Jakarta Sans";
-font-weight:700;
-font-size:20px;
-color:var(--primary);
-}
-
-/* MAIN CARD */
-
-.container{
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:90vh;
-}
-
-.logo-container{
-
-text-align:center;
-margin-bottom:15px;
-
-}
-
-.amc-logo{
-
-width:80px;
-height:80px;
-object-fit:contain;
-margin-bottom:8px;
-
-}
-
-.gov-text{
-
-font-family:"Plus Jakarta Sans";
-font-weight:700;
-font-size:16px;
-color:var(--primary);
-
-}
-
-.gov-text span{
-
-display:block;
-font-size:12px;
-font-weight:500;
-color:gray;
-
-}
-
-.card{
-
-width:450px;
-background:white;
-padding:35px;
-border-radius:15px;
-box-shadow:0 15px 40px rgba(0,0,0,0.08);
-
-}
-
-.title{
-
-text-align:center;
-font-family:"Plus Jakarta Sans";
-font-size:24px;
-margin-bottom:20px;
-
-}
-
-/* FORM */
-
-.form-group{
-
-margin-bottom:15px;
-
-}
-
-label{
-
-font-size:14px;
-font-weight:600;
-
-}
-
-input,select{
-
-width:100%;
-padding:12px;
-margin-top:5px;
-border-radius:8px;
-border:1px solid var(--border);
-font-size:14px;
-
-}
-
-input:focus,select:focus{
-
-outline:none;
-border-color:var(--primary);
-
-}
-
-/* BUTTON */
-
-button{
-
-width:100%;
-padding:14px;
-margin-top:10px;
-background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-border:none;
-border-radius:10px;
-color:white;
-font-weight:600;
-font-size:15px;
-cursor:pointer;
-
-}
-
-button:hover{
-
-opacity:0.9;
-
-}
-
-.switch{
-
-text-align:center;
-margin-top:15px;
-color:var(--primary);
-cursor:pointer;
-font-weight:600;
-
-}
-
-.gov-badge{
-
-background:hsl(215,80%,95%);
-color:var(--primary);
-padding:6px 10px;
-border-radius:20px;
-font-size:12px;
-display:inline-block;
-margin-bottom:15px;
-
-}
-
-/* Top Info Bar */
-
+/* Top Bar - Matching original style */
 .topbar {
-
-background: hsl(215, 30%, 96%);
-border-bottom: 1px solid hsl(214, 20%, 90%);
-font-size: 13px;
-color: hsl(215, 25%, 35%);
-
+  background: #003366;
+  border-bottom: 2px solid #ff9933;
+  font-size: 13px;
+  color: white;
 }
 
 .topbar-container {
-
-max-width: 1200px;
-margin: auto;
-padding: 6px 20px;
-display: flex;
-align-items: center;
-gap: 10px;
-font-weight: 500;
-
+  max-width: 1200px;
+  margin: auto;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
 }
 
 .divider {
-
-opacity: 0.4;
-
+  opacity: 0.5;
 }
 
-/* Main Header */
-
+/* Header - Exact match with original dashboard */
 .header {
-
-background: white;
-padding: 14px 0;
-border-bottom: 1px solid hsl(214, 20%, 90%);
-transition: 0.3s;
-
+  background: linear-gradient(135deg, #003366, #001f4a);
+  color: white;
+  padding: 18px 30px;
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 4px solid #ff9933;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
 }
 
-.header-container {
-
-max-width: 1200px;
-margin: auto;
-padding: 0 20px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-
+.header.scrolled {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
-/* Logo */
-
-.logo-text {
-
-font-size: 18px;
-font-weight: 700;
-color: hsl(215, 80%, 45%);
-
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Nav */
-
-.nav a {
-
-color: hsl(215, 15%, 45%);
-margin: 0 12px;
-font-size: 14px;
-font-weight: 500;
-transition: 0.2s;
-
+.emblem-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  background: white;
+  border-radius: 50%;
+  padding: 4px;
 }
 
-.nav a:hover {
-
-color: hsl(215, 80%, 45%);
-
+.header-btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Login Button */
-
-.login-btn {
-
-background: hsl(215, 80%, 45%);
-color: white;
-padding: 8px 18px;
-border-radius: 8px;
-font-weight: 600;
-
+.header-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
 }
 
-.login-btn:hover {
-
-background: hsl(215, 80%, 55%);
-
+/* Stats Section - Matching original dashboard */
+.stats {
+  display: flex;
+  gap: 20px;
+  padding: 20px 30px;
+  flex-wrap: wrap;
 }
 
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 200px;
+  flex: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--primary);
+}
 
+.stat-card h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #003366;
+}
+
+.stat-title {
+  color: #5a6f8c;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Alert Banner */
+.alert-banner {
+  background: #fff1f0;
+  border-left: 4px solid #a11d2b;
+  color: #a11d2b;
+  padding: 12px 30px;
+  font-weight: 600;
+  margin: 0 30px 20px 30px;
+  display: none;
+}
+
+/* Main Container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 250px);
+  padding: 20px;
+}
+
+/* Card - Matching original table style */
+.card {
+  width: 500px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  animation: slideUp 0.6s ease;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #003366, #001f4a);
+  color: white;
+  padding: 25px 30px;
+  border-bottom: 4px solid #ff9933;
+  text-align: center;
+}
+
+.card-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.card-header p {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+}
+
+.card-body {
+  padding: 30px;
+}
+
+/* Logo Container */
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.amc-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  background: #f8fafc;
+  border-radius: 50%;
+  padding: 8px;
+  border: 2px solid #cbd5e1;
+  margin-bottom: 10px;
+}
+
+.gov-text {
+  font-weight: 700;
+  font-size: 16px;
+  color: #003366;
+}
+
+.gov-text span {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5a6f8c;
+  margin-top: 4px;
+}
+
+/* Gov Badge - Matching risk badges */
+.gov-badge {
+  background: #e3f7ec;
+  color: #0b6e4f;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 20px;
+  border-left: 3px solid var(--success);
+  width: 100%;
+  text-align: center;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  color: #1e3a5f;
+  font-size: 14px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 77, 124, 0.1);
+  background: white;
+}
+
+/* Button - Matching deploy button */
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 6px;
+  border: none;
+  background: var(--success);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(11, 110, 79, 0.3);
+  background: #0d8a5c;
+}
+
+/* Switch Link */
+.switch {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px;
+  border-top: 1px solid #e5eaef;
+}
+
+.switch:hover {
+  color: #ff9933;
+  text-decoration: underline;
+}
+
+/* Title */
+.title {
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #003366;
+  margin: 15px 0;
+}
+
+/* Animation */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .header-left {
+    flex-direction: column;
+  }
+  
+  .stats {
+    flex-direction: column;
+    padding: 15px;
+  }
+  
+  .card {
+    width: 100%;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .alert-banner {
+    margin: 15px;
+  }
+}
+
+/* Department badges (for future use) */
+.dept-badge {
+  background: #e3f7ec;
+  color: #0b6e4f;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Toast (for future use) */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--success);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  display: none;
+  border-left: 4px solid #ff9933;
+}
 
 </style>
 
 </head>
 <body>
+
+<!-- Top Bar - Matching original style -->
 <div class="topbar">
     <div class="topbar-container">
-        <span>Amravati Municipal Corporation</span>
+        <span>🏛️ Amravati Municipal Corporation</span>
         <span class="divider">|</span>
-        <span>Smart City Grievance Portal</span>
+        <span>⚡ Smart City Grievance Portal</span>
+        <span class="divider">|</span>
+        <span>🔐 Authorized Personnel Only</span>
     </div>
 </div>
+
+<!-- Header - Exact match with original dashboard -->
 <div class="header">
-
-<div class="logo">
-          CivicConnect Amravati — Officer Portal
+  <div class="header-left">
+    <img src="amc_logo.png" alt="AMC Logo" class="emblem-logo">
+    <div>अमरावती महानगरपालिका भविष्यमान जोखीम नियंत्रण केंद्र</div>
+  </div>
+  <div>
+    <a href="index.html" class="header-btn">🏠 Dashboard</a>
+    <a href="#" class="header-btn">📊 Reports</a>
+  </div>
 </div>
 
+<!-- Stats Section - Matching original dashboard -->
+<div class="stats">
+  <div class="stat-card">
+    <h2>24</h2>
+    <div class="stat-title">Active Officers</div>
+  </div>
+  <div class="stat-card">
+    <h2>156</h2>
+    <div class="stat-title">Pending Complaints</div>
+  </div>
+  <div class="stat-card">
+    <h2>89%</h2>
+    <div class="stat-title">Resolution Rate</div>
+  </div>
 </div>
 
+<!-- Alert Banner (can be shown if needed) -->
+<div class="alert-banner" id="alertBanner">
+    ⚠️ High Priority: 8 complaints pending for more than 48 hours
+</div>
 
+<!-- Main Container -->
 <div class="container">
 
 <div class="card">
 
-<div class="gov-badge">
-Authorized AMC Personnel Only
+<div class="card-header">
+    <h2>Officer Portal</h2>
+    <p>Authorized AMC Personnel Only</p>
 </div>
 
-<div class="logo-container">
-    <img src="amc_logo.png" class="amc-logo">
-    <div class="gov-text">
-        Amravati Municipal Corporation  
-        <span>Official Officer Portal</span>
+<div class="card-body">
+
+    <div class="logo-container">
+        <img src="amc_logo.png" class="amc-logo">
+        <div class="gov-text">
+            Amravati Municipal Corporation  
+            <span>Official Officer Portal</span>
+        </div>
     </div>
-</div>
 
-<div class="title" id="formTitle">
-Officer Login
-</div>
+    <div class="gov-badge" id="badge">
+        🔐 Authorized AMC Personnel Only
+    </div>
 
+    <div class="title" id="formTitle">
+        Officer Login
+    </div>
 
-<form id="form">
+    <form id="form">
 
-<div id="registerFields" style="display:none;">
+        <!-- Registration Fields (Hidden by default) -->
+        <div id="registerFields" style="display:none;">
+            <div class="form-group">
+                <label>👤 Officer Full Name</label>
+                <input type="text" id="name" placeholder="Enter full name">
+            </div>
 
-<div class="form-group">
-<label>Officer Full Name</label>
-<input type="text" id="name">
-</div>
+            <div class="form-group">
+                <label>🆔 Official AMC Officer ID</label>
+                <input type="text" id="officerId" placeholder="Enter officer ID">
+            </div>
 
-<div class="form-group">
-<label>Official AMC Officer ID</label>
-<input type="text" id="officerId">
-</div>
+            <div class="form-group">
+                <label>🔢 Aadhaar Number</label>
+                <input type="text" id="aadhaar" maxlength="12" placeholder="Enter 12-digit Aadhaar">
+            </div>
 
-<div class="form-group">
-<label>Aadhaar Number</label>
-<input type="text" id="aadhaar" maxlength="12">
-</div>
+            <div class="form-group">
+                <label>🏢 Select Department</label>
+                <select id="department">
+                    <option value="">-- Select Department --</option>
+                    <option>Drainage / Sewage</option>
+                    <option>Garbage / Sanitation</option>
+                    <option>Potholes / Road Damage</option>
+                    <option>Streetlight Not Working</option>
+                    <option>Water Leakage / Shortage</option>
+                </select>
+            </div>
+        </div>
 
-<div class="form-group">
-<label>Select Department</label>
-<select id="department">
+        <!-- Login Fields -->
+        <div class="form-group">
+            <label>🆔 Officer ID</label>
+            <input type="text" id="loginId" placeholder="Enter your officer ID" required>
+        </div>
 
-<option value="">Select Department</option>
+        <div class="form-group">
+            <label>🔑 Password</label>
+            <input type="password" id="password" placeholder="Enter password" required>
+        </div>
 
-<option>Sanitation</option>
-<option>Road Maintenance</option>
-<option>Water Supply</option>
-<option>Electrical</option>
-<option>Encroachment</option>
+        <!-- Confirm Password (Hidden by default) -->
+        <div class="form-group" id="confirmDiv" style="display:none;">
+            <label>✓ Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Re-enter password">
+        </div>
 
-</select>
-</div>
+        <button type="submit">
+            ➡️ Continue
+        </button>
 
-</div>
+    </form>
 
+    <div class="switch" onclick="toggleForm()">
+        New Officer? Register Here
+    </div>
 
-<div class="form-group">
-
-<label>Officer ID</label>
-<input type="text" id="loginId" required>
-
-</div>
-
-<div class="form-group">
-
-<label>Password</label>
-<input type="password" id="password" required>
-
-</div>
-
-<div class="form-group" id="confirmDiv" style="display:none;">
-
-<label>Confirm Password</label>
-<input type="password" id="confirmPassword">
-
-</div>
-
-
-<button type="submit">
-Continue
-</button>
-
-</form>
-
-<div class="switch" onclick="toggleForm()">
-New Officer? Register Here
 </div>
 
 </div>
 
 </div>
+
+<!-- Toast Notification (Hidden by default) -->
+<div class="toast" id="toast">Action completed successfully</div>
+
+<!-- Script - UNCHANGED (exactly as provided) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
 /* SUPABASE CONFIG */
 
-const SUPABASE_URL = "https://ibfeegtzehgspswvlyna.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliZmVlZ3R6ZWhnc3Bzd3ZseW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTY5ODAsImV4cCI6MjA4NzU5Mjk4MH0.I5CPOxe69SQ3O0qqb5A6Zx-pAWzLmZpXyu97mt9Zvag";
+const SUPABASE_URL = "https://kzxdxnxgouthsywbsnvl.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag";
 
 const supabaseClient = supabase.createClient(
 SUPABASE_URL,
@@ -504,8 +555,6 @@ isRegister?"Already Registered? Login":"New Officer? Register Here";
 
 }
 
-
-
 /* MAIN FORM SUBMIT */
 
 document.getElementById("form").onsubmit = async function(e){
@@ -523,8 +572,6 @@ await loginOfficer();
 }
 
 };
-
-
 
 /* REGISTER OFFICER */
 
@@ -553,7 +600,6 @@ return;
 
 }
 
-
 /* INSERT INTO SUPABASE */
 
 const {data,error} = await supabaseClient
@@ -569,15 +615,12 @@ password:password
 }
 ]);
 
-
 if(error){
 
 alert("Officer already exists or error");
-
 return;
 
 }
-
 
 /* SAVE SESSION */
 
@@ -588,63 +631,75 @@ department:dept,
 loginId:loginId
 }));
 
-
 alert("Registration Successful");
-
 
 window.location="department_dashboard.html";
 
 }
-
-
-
-/* LOGIN OFFICER */
 
 async function loginOfficer(){
 
-let loginId=document.getElementById("loginId").value;
-let password=document.getElementById("password").value;
+let loginId = document.getElementById("loginId").value.trim();
+let password = document.getElementById("password").value.trim();
 
+/* VALIDATION */
 
-/* CHECK DATABASE */
+if(!loginId || !password){
+    alert("Please enter Officer ID and Password");
+    return;
+}
 
-const {data,error} = await supabaseClient
+try{
+
+/* FETCH FROM DATABASE */
+
+const { data, error } = await supabaseClient
 .from("amc_officers")
 .select("*")
-.eq("login_id",loginId)
-.eq("password",password)
+.eq("login_id", loginId)
+.eq("password", password)
+.limit(1)
 .single();
 
+/* ERROR CHECK */
 
-if(error || !data){
-
-alert("Invalid Officer ID or Password");
-
-return;
-
+if(error){
+    alert("Login failed. Officer not found.");
+    console.log(error);
+    return;
 }
 
+/* SUCCESS */
 
-/* SAVE SESSION */
+if(data){
+    console.log("Login Success:", data);
 
-localStorage.setItem("currentOfficer",
-JSON.stringify(data)
-);
+    /* SAVE SESSION */
+    localStorage.setItem("currentOfficer", JSON.stringify({
+        id: data.id,
+        name: data.name,
+        officer_id: data.officer_id,
+        department: data.department,
+        login_id: data.login_id
+    }));
 
+    alert("Login Successful! Welcome " + data.name);
 
-/* REDIRECT */
-
-window.location="department_dashboard.html";
-
+    /* REDIRECT TO DASHBOARD */
+    window.location.href = "department_dashboard.html";
 }
 
+}
+catch(err){
+    console.error(err);
+    alert("Unexpected error occurred");
+}
 
+}
 
 window.addEventListener("scroll", function(){
-
 document.querySelector(".header")
 .classList.toggle("scrolled", window.scrollY > 20);
-
 });
 
 </script>

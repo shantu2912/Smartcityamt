@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Complaints Dashboard · Service Issues</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .dashboard-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a2b3c;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-title h1 i {
+            color: #2563eb;
+        }
+
+        .header-title p {
+            color: #4a5b6e;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-badge {
+            background: #dc2626;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-info h3 {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .stat-info .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.6rem 2rem 0.6rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            background: white;
+            font-size: 0.9rem;
+            color: #1e293b;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .filter-select:focus {
+            border-color: #2563eb;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            color: #94a3b8;
+        }
+
+        .search-box input {
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            width: 250px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #2563eb;
+        }
+
+        .refresh-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .refresh-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* Loading & Error States */
+        .loading-state, .error-state, .no-data {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 24px;
+            color: #64748b;
+        }
+
+        .loading-state i, .error-state i, .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #94a3b8;
+        }
+
+        .error-state i {
+            color: #ef4444;
+        }
+
+        .error-state button {
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        /* Complaints Grid */
+        .complaints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .complaint-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+            border: 1px solid #edf2f7;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .complaint-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .category-badge {
+            background: #e6f0ff;
+            color: #2563eb;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .priority-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .tracking-id {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            margin: 0.5rem 0;
+        }
+
+        .complaint-details {
+            margin: 1rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #334155;
+        }
+
+        .detail-item i {
+            width: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        .detail-item .label {
+            font-weight: 500;
+            min-width: 70px;
+            color: #475569;
+        }
+
+        .detail-item .value {
+            color: #1e293b;
+            flex: 1;
+        }
+
+        .photo-thumb {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
+
+        .status-bar {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eef2f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status {
+            background: #f1f5f9;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .anonymous-badge {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+        }
+
+        /* Photo Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filters-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-title">
+                <h1>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Live Issues Dashboard
+                </h1>
+                <p>
+                    <span class="live-badge">
+                        <i class="fas fa-circle"></i> LIVE
+                    </span>
+                    <span>Real-time complaints from database · <span id="totalCount">0</span> total issues</span>
+                </p>
+            </div>
+            <div class="stats-container" id="statsContainer">
+                <!-- Stats will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="Garbage / Sanitation">Garbage / Sanitation</option>
+                    <option value="Water Leakage / Shortage">Water Leakage / Shortage</option>
+                    <option value="Potholes / Road Damage">Potholes / Road Damage</option>
+                    <option value="Streetlight Not Working">Streetlight Not Working</option>
+                    <option value="Drainage / Sewage">Drainage / Sewage</option>
+                </select>
+                
+                <select class="filter-select" id="priorityFilter">
+                    <option value="all">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                
+                <select class="filter-select" id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name, location, tracking ID...">
+            </div>
+            
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <div id="contentArea">
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <h3>Fetching complaints from database...</h3>
+                <p>Connecting to Supabase</p>
+            </div>
+            
+            <!-- Error State -->
+            <div class="error-state" id="errorState" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Failed to load complaints</h3>
+                <p id="errorMessage"></p>
+                <button onclick="fetchComplaints()">Try Again</button>
+            </div>
+            
+            <!-- No Data State -->
+            <div class="no-data" id="noDataState" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No complaints found</h3>
+                <p>No issues match your current filters</p>
+            </div>
+            
+            <!-- Complaints Grid -->
+            <div id="complaintsGrid" class="complaints-grid" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="modal" id="photoModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="" alt="Complaint photo">
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Initialize Supabase client after library loads
+        window.supabase = supabase;
+    </script>
+    <script>
+        // Supabase configuration - REPLACE WITH YOUR ACTUAL CREDENTIALS
+        const SUPABASE_URL = "https://ibfeegtzehgspswvlyna.supabase.co"; // Replace with your Supabase URL
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliZmVlZ3R6ZWhnc3Bzd3ZseW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTY5ODAsImV4cCI6MjA4NzU5Mjk4MH0.I5CPOxe69SQ3O0qqb5A6Zx-pAWzLmZpXyu97mt9Zvag"; // Replace with your anon key
+
+        // State
+        let allComplaints = [];
+        let filteredComplaints = [];
+
+        // Initialize Supabase client
+        const supabase = window.supabase?.createClient 
+            ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+            : null;
+
+        // Check if Supabase is loaded
+        if (!window.supabase) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = 'Supabase library failed to load. Check your internet connection.';
+        }
+
+        // Fetch complaints from Supabase
+        async function fetchComplaints() {
+            if (!supabase) {
+                showError('Supabase client not initialized');
+                return;
+            }
+
+            // Show loading, hide others
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('noDataState').style.display = 'none';
+            document.getElementById('complaintsGrid').style.display = 'none';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('allcomplaints')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allComplaints = data || [];
+                applyFilters();
+                updateStats();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (allComplaints.length === 0) {
+                    document.getElementById('noDataState').style.display = 'block';
+                } else {
+                    document.getElementById('complaintsGrid').style.display = 'grid';
+                }
+                
+                document.getElementById('totalCount').textContent = allComplaints.length;
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                showError(error.message);
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('complaintsGrid').style.display = 'none';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // Update statistics
+        function updateStats() {
+            const stats = {
+                total: allComplaints.length,
+                pending: allComplaints.filter(c => c.status === 'Pending').length,
+                high: allComplaints.filter(c => c.priority === 'High').length,
+                resolved: allComplaints.filter(c => c.status === 'Resolved').length
+            };
+            
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card">
+                    <i class="fas fa-clipboard-list" style="color: #2563eb; font-size: 1.5rem;"></i>
+                    <div class="stat-info">
+                        <h3>Total Issues</h3>
+                        <span class="number">${stats.total}</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock" style="color: #eab308; font-size: 1.5rem;"></i>
+                    <div class="stat-info">
+                        <h3>Pending</h3>
+                        <span class="number">${stats.pending}</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-exclamation" style="color: #dc2626; font-size: 1.5rem;"></i>
+                    <div class="stat-info">
+                        <h3>High Priority</h3>
+                        <span class="number">${stats.high}</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle" style="color: #16a34a; font-size: 1.5rem;"></i>
+                    <div class="stat-info">
+                        <h3>Resolved</h3>
+                        <span class="number">${stats.resolved}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Apply filters and search
+        function applyFilters() {
+            const category = document.getElementById('categoryFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredComplaints = allComplaints.filter(complaint => {
+                // Category filter
+                if (category !== 'all' && complaint.category !== category) return false;
+                
+                // Priority filter
+                if (priority !== 'all' && complaint.priority !== priority) return false;
+                
+                // Status filter
+                if (status !== 'all' && complaint.status !== status) return false;
+                
+                // Search
+                if (searchTerm) {
+                    return (
+                        (complaint.name && complaint.name.toLowerCase().includes(searchTerm)) ||
+                        (complaint.location && complaint.location.toLowerCase().includes(searchTerm)) ||
+                        (complaint.tracking_id && complaint.tracking_id.toLowerCase().includes(searchTerm)) ||
+                        (complaint.description && complaint.description.toLowerCase().includes(searchTerm))
+                    );
+                }
+                
+                return true;
+            });
+
+            renderComplaints();
+            
+            // Show/hide no data message
+            if (filteredComplaints.length === 0 && allComplaints.length > 0) {
+                document.getElementById('noDataState').style.display = 'block';
+                document.getElementById('complaintsGrid').style.display = 'none';
+            } else if (allComplaints.length > 0) {
+                document.getElementById('noDataState').style.display = 'none';
+                document.getElementById('complaintsGrid').style.display = 'grid';
+            }
+        }
+
+        // Render complaints to grid
+        function renderComplaints() {
+            const grid = document.getElementById('complaintsGrid');
+            
+            if (filteredComplaints.length === 0) {
+                grid.innerHTML = '';
+                return;
+            }
+
+            grid.innerHTML = filteredComplaints.map(complaint => {
+                const priorityClass = `priority-${complaint.priority?.toLowerCase() || 'medium'}`;
+                const date = new Date(complaint.created_at).toLocaleString();
+                const photoHtml = complaint.photo_url 
+                    ? `<img src="${complaint.photo_url}" class="photo-thumb" onclick="openPhoto('${complaint.photo_url}')" alt="Complaint photo">`
+                    : '';
+
+                return `
+                    <div class="complaint-card">
+                        <div class="card-header">
+                            <span class="category-badge">
+                                <i class="fas fa-tag"></i> ${complaint.category || 'Uncategorized'}
+                            </span>
+                            <span class="priority-badge ${priorityClass}">${complaint.priority || 'Medium'}</span>
+                        </div>
+                        
+                        <div class="tracking-id">
+                            <i class="fas fa-hashtag"></i> ${complaint.tracking_id || 'No ID'}
+                        </div>
+                        
+                        <div class="complaint-details">
+                            ${complaint.name && !complaint.anonymous ? `
+                                <div class="detail-item">
+                                    <i class="fas fa-user"></i>
+                                    <span class="label">Name:</span>
+                                    <span class="value">${complaint.name}</span>
+                                </div>
+                            ` : ''}
+                            
+                            ${complaint.mobile && !complaint.anonymous ? `
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span class="label">Mobile:</span>
+                                    <span class="value">${complaint.mobile}</span>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="label">Location:</span>
+                                <span class="value">${complaint.location || 'Not specified'}</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <i class="fas fa-align-left"></i>
+                                <span class="label">Issue:</span>
+                                <span class="value">${complaint.description || 'No description'}</span>
+                            </div>
+                            
+                            ${photoHtml ? `
+                                <div class="detail-item">
+                                    <i class="fas fa-camera"></i>
+                                    <span class="label">Photo:</span>
+                                    <div class="value">${photoHtml}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="status-bar">
+                            <span class="status">
+                                <i class="fas fa-circle" style="color: ${complaint.status === 'Resolved' ? '#16a34a' : complaint.status === 'In Progress' ? '#eab308' : '#94a3b8'}; font-size: 0.5rem;"></i>
+                                ${complaint.status || 'Pending'}
+                            </span>
+                            <span class="timestamp">
+                                <i class="far fa-clock"></i> ${date}
+                                ${complaint.anonymous ? '<span class="anonymous-badge"><i class="fas fa-user-secret"></i> Anonymous</span>' : ''}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Photo modal functions
+        function openPhoto(url) {
+            document.getElementById('modalImage').src = url;
+            document.getElementById('photoModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('photoModal').classList.remove('active');
+        }
+
+        // Event listeners
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('priorityFilter').addEventListener('change', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('refreshBtn').addEventListener('click', fetchComplaints);
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('photoModal')) {
+                closeModal();
+            }
+        });
+
+        // Auto-refresh every 30 seconds
+        setInterval(fetchComplaints, 30000);
+
+        // Initial fetch
+        fetchComplaints();
+    </script>
+
+    <!-- Load Supabase client library -->
+    
+</body>
+</html>

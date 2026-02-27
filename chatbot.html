@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CivicConnect AI Chatbot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    background:#0f172a;
+    font-family:Segoe UI;
+    color:white;
+}
+
+.chat-container{
+    width:400px;
+    margin:50px auto;
+    background:#1e293b;
+    border-radius:10px;
+    padding:15px;
+}
+
+.chat-box{
+    height:350px;
+    overflow-y:auto;
+    background:#020617;
+    padding:10px;
+    border-radius:8px;
+}
+
+.user, .bot{
+    padding:8px;
+    margin:5px;
+    border-radius:6px;
+}
+
+.user{
+    background:#2563eb;
+    text-align:right;
+}
+
+.bot{
+    background:#16a34a;
+    text-align:left;
+}
+
+input{
+    width:75%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:5px;
+}
+
+button{
+    padding:10px;
+    background:#38bdf8;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+
+<h3>AMC AI Assistant</h3>
+
+<div class="chat-box" id="chatBox"></div>
+
+<input type="text" id="userInput" placeholder="Ask your question...">
+<button onclick="sendMessage()">Send</button>
+
+</div>
+
+<script>
+
+// Predefined Questions & Answers
+const faq = {
+
+    
+"hi":
+"Hellow Welcome on the AMC (Amravati Municipal Corporation) How does may I hepl you...!)",
+
+
+"how to see all isssues":
+"You see all issues on clicking on the Live Dashboard",
+
+
+
+"how issues resolved":
+"Issues resolved by the AMC Municiple Corporation",
+
+
+"how to report issue":
+"You can report an issue by clicking on 'Report Issue' and filling the form with photo and location.",
+
+
+"is issues really resolved":
+"Yes, issues are resolved by the AMC Municiple Corporation.",
+
+"how to report issue":
+"You can report an issue by clicking on 'Report Issue' and filling the form with photo and location.",
+
+"how to check status":
+"You can check complaint status using your tracking ID in the Track Complaint section.",
+
+"what issues can i report":
+"You can report Garbage, Water Leakage, Road Damage, Streetlight, and Drainage problems.",
+
+"how long it takes":
+"Usually issues are resolved within 24 to 72 hours depending on priority.",
+
+"is my complaint anonymous":
+"Yes, you can submit complaint anonymously by selecting anonymous option."
+
+};
+
+function sendMessage(){
+
+let input = document.getElementById("userInput").value.toLowerCase();
+let chatBox = document.getElementById("chatBox");
+
+// show user message
+chatBox.innerHTML += `<div class="user">${input}</div>`;
+
+// bot response
+let response = "Sorry, I don't understand. Please contact support.";
+
+for(let question in faq){
+
+    if(input.includes(question)){
+        response = faq[question];
+        break;
+    }
+
+}
+
+// show bot message
+chatBox.innerHTML += `<div class="bot">${response}</div>`;
+
+document.getElementById("userInput").value="";
+
+chatBox.scrollTop = chatBox.scrollHeight;
+
+}
+
+</script>
+
+</body>
+</html>
