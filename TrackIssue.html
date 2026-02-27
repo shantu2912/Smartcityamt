@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Grievances | Smart Urban System</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --success: #10b981;
+            --bg-main: #f3f4f6;
+            --surface: #ffffff;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .header-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            padding: 60px 20px; text-align: center; color: white;
+        }
+
+        .header-bg h1 { margin: 0 0 10px 0; font-size: 2rem; }
+        .header-bg p { margin: 0 0 30px 0; opacity: 0.9; }
+
+        .search-box {
+            max-width: 500px; margin: 0 auto; display: flex;
+            background: white; padding: 8px; border-radius: 99px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .search-box input {
+            flex: 1; border: none; outline: none; padding: 12px 20px;
+            font-size: 1.05rem; border-radius: 99px 0 0 99px;
+        }
+
+        .search-box button {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 30px; border-radius: 99px; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+
+        .search-box button:hover { background: #4338ca; }
+
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+        /* Status & Error Messages */
+        #status-msg {
+            text-align: center; font-weight: 600; margin-top: 20px;
+            padding: 15px; border-radius: 8px; display: none;
+        }
+        .msg-error { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+        .msg-loading { background: #e0e7ff; color: #4338ca; }
+        .msg-empty { background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; }
+
+        /* Card Styles */
+        .card {
+            background: var(--surface); border-radius: 12px; padding: 24px;
+            margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px; }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 8px 0; color: var(--primary); }
+        .card-meta { font-size: 0.9rem; color: var(--text-gray); display: flex; gap: 15px; flex-wrap: wrap; }
+        
+        .desc-box { background: #f9fafb; padding: 12px; border-radius: 8px; font-size: 0.95rem; color: #4b5563; margin-bottom: 24px; }
+
+        /* Timeline Styles */
+        .timeline { position: relative; padding-top: 20px; }
+        .track { position: absolute; top: 35px; left: 30px; right: 30px; height: 4px; background: #e5e7eb; z-index: 1; }
+        .progress { position: absolute; top: 35px; left: 30px; height: 4px; background: var(--success); z-index: 2; transition: width 1s ease-in-out; width: 0%; }
+        
+        .steps { display: flex; justify-content: space-between; position: relative; z-index: 3; }
+        .step { display: flex; flex-direction: column; align-items: center; width: 60px; }
+        
+        .circle {
+            width: 34px; height: 34px; border-radius: 50%; background: white;
+            border: 3px solid #e5e7eb; display: flex; align-items: center; justify-content: center;
+            color: #9ca3af; font-weight: bold; transition: 0.3s;
+        }
+        .step-text { margin-top: 8px; font-size: 0.8rem; font-weight: 600; color: #9ca3af; }
+
+        .step.active .circle { border-color: var(--success); background: var(--success); color: white; }
+        .step.active .step-text { color: var(--success); }
+    </style>
+</head>
+<body>
+
+    <div class="header-bg">
+        <h1>Track Your Request</h1>
+        <p>Enter your full name to view real-time updates.</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Enter citizen name..." onkeypress="if(event.key === 'Enter') executeSearch()" />
+            <button onclick="executeSearch()"><i class="fas fa-search"></i> Track</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="status-msg"></div>
+        
+        <div id="resultsArea"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // --- 1. SETUP CREDENTIALS ---
+        const URL = 'https://kzxdxnxgouthsywbsnvl.supabase.co'; 
+        const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag'; // <--- PUT YOUR KEY HERE!
+        
+        const supabase = window.supabase.createClient(URL, KEY);
+        
+        const statusBox = document.getElementById('status-msg');
+        const resultsArea = document.getElementById('resultsArea');
+
+        function showStatus(message, type) {
+            statusBox.className = ''; // Reset classes
+            statusBox.classList.add('msg-' + type);
+            statusBox.innerHTML = message;
+            statusBox.style.display = 'block';
+        }
+
+        async function executeSearch() {
+            const name = document.getElementById('searchInput').value.trim();
+            resultsArea.innerHTML = ''; // Clear old results
+            
+            if (!name) {
+                showStatus("⚠️ Please enter a name to search.", "error");
+                return;
+            }
+
+            if (KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag') {
+                showStatus("🛑 <b>DEVELOPER ERROR:</b> You forgot to paste your Supabase Anon Key into the HTML code (Line 144).", "error");
+                return;
+            }
+
+            showStatus('<i class="fas fa-spinner fa-spin"></i> Searching database...', 'loading');
+
+            try {
+                // Fetch data
+                const { data, error } = await supabase
+                    .from('allcomplaints')
+                    .select('*')
+                    .ilike('name', `%${name}%`)
+                    .order('created_at', { ascending: false });
+
+                // Catch Database Errors (Like RLS policies)
+                if (error) {
+                    console.error("Supabase Error Object:", error);
+                    let errorMsg = `🛑 <b>Database Error:</b> ${error.message}`;
+                    if (error.code === '42501') {
+                        errorMsg += "<br><br><i>Hint: This usually means Row Level Security (RLS) is blocking you. Go to Supabase > Authentication > Policies and enable Public Read Access for 'allcomplaints'.</i>";
+                    }
+                    throw new Error(errorMsg);
+                }
+
+                // Handle Empty Results
+                if (!data || data.length === 0) {
+                    showStatus(`No records found for "<b>${name}</b>".`, 'empty');
+                    return;
+                }
+
+                // Success! Hide status and build cards
+                statusBox.style.display = 'none';
+                
+                data.forEach((item, index) => {
+                    buildCard(item, index);
+                });
+
+            } catch (err) {
+                showStatus(err.message, 'error');
+            }
+        }
+
+        function buildCard(data, index) {
+            // Format Data
+            const dateStr = new Date(data.created_at).toLocaleDateString();
+            const statusStr = (data.status || 'pending').toLowerCase();
+            
+            // Calculate Timeline Progress
+            let width = '0%';
+            let s1 = 'active', s2 = '', s3 = '';
+
+            if (statusStr.includes('prog') || statusStr.includes('work')) {
+                width = '50%'; s2 = 'active';
+            } else if (statusStr.includes('resolv') || statusStr.includes('clos') || statusStr.includes('don')) {
+                width = '100%'; s2 = 'active'; s3 = 'active';
+            }
+
+            // Create HTML Structure
+            const html = `
+                <div class="card" style="animation-delay: ${index * 0.1}s">
+                    <div class="card-header">
+                        <div class="card-title">${data.category || 'Service Request'}</div>
+                        <div class="card-meta">
+                            <span><i class="far fa-calendar"></i> ${dateStr}</span>
+                            <span><i class="fas fa-map-marker-alt"></i> ${data.location || 'Unknown Location'}</span>
+                            <span><i class="fas fa-fingerprint"></i> Tracking ID: ${data.tracking_id || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    <div class="desc-box">
+                        ${data.description || 'No description provided by user.'}
+                    </div>
+
+                    <div class="timeline">
+                        <div class="track"></div>
+                        <div class="progress" id="bar-${data.id}"></div>
+                        <div class="steps">
+                            <div class="step ${s1}">
+                                <div class="circle"><i class="fas fa-inbox"></i></div>
+                                <div class="step-text">Received</div>
+                            </div>
+                            <div class="step ${s2}">
+                                <div class="circle"><i class="fas fa-tools"></i></div>
+                                <div class="step-text">In Progress</div>
+                            </div>
+                            <div class="step ${s3}">
+                                <div class="circle"><i class="fas fa-check"></i></div>
+                                <div class="step-text">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            resultsArea.insertAdjacentHTML('beforeend', html);
+
+            // Animate progress bar slightly after render
+            setTimeout(() => {
+                const bar = document.getElementById(`bar-${data.id}`);
+                if (bar) bar.style.width = width;
+            }, 50);
+        }
+    </script>
+</body>
+</html>
