@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Municipal Predictive Control Center</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+    --primary: #1e4d7c;
+    --success: #0b6e4f;
+    --warning: #b6581c;
+    --danger: #a11d2b;
+    --dark: #0a1c2f;
+    --light: #f4f7fc;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #eef2f7;
+    color: #1a2b3c;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #003366, #001f4a);
+    color: white;
+    padding: 18px 30px;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 4px solid #ff9933;
+}
+
+/* Alert Banner */
+.alert-banner {
+    background: #fff1f0;
+    border-left: 4px solid #a11d2b;
+    color: #a11d2b;
+    padding: 12px 30px;
+    font-weight: 600;
+    display: none;
+}
+
+/* Stats */
+.stats {
+    display: flex;
+    gap: 20px;
+    padding: 20px 30px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 200px;
+    flex: 1;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--primary);
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #003366;
+}
+
+.stat-title {
+    color: #5a6f8c;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Table */
+.container {
+    padding: 0 30px 30px;
+}
+
+.table-box {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #f0f4f9;
+    text-align: left;
+    padding: 14px;
+    font-size: 14px;
+    color: #1e3a5f;
+    font-weight: 600;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+td {
+    padding: 14px;
+    border-bottom: 1px solid #e5eaef;
+    font-size: 14px;
+}
+
+/* Risk Badges */
+.badge {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.high { background: #fee2e2; color: #a11d2b; }
+.medium { background: #fff3e0; color: #b6581c; }
+.low { background: #e3f7ec; color: #0b6e4f; }
+
+/* Action Buttons */
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 5px;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.inspect { background: #1e4d7c; color: white; }
+.deploy { background: #0b6e4f; color: white; }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #0b6e4f;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: none;
+    border-left: 4px solid #ff9933;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<img src="amc_logo.png" alt="AMC Logo" class="emblem-logo"> अमरावती महानगरपालिका भविष्यमान जोखीम नियंत्रण केंद्र
+</div>
+
+<div class="alert-banner" id="alertBanner">
+⚠️ High Risk Zones Detected – Immediate Action Recommended
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <h2 id="totalZones">0</h2>
+        <div class="stat-title">Total Risk Zones</div>
+    </div>
+    <div class="stat-card">
+        <h2 id="highZones">0</h2>
+        <div class="stat-title">High Risk Zones</div>
+    </div>
+    <div class="stat-card">
+        <h2 id="activeCategories">0</h2>
+        <div class="stat-title">Issue Categories</div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>Area / Zone</th>
+                    <th>Category</th>
+                    <th>Total Complaints</th>
+                    <th>Risk Level</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="riskTable">
+                <tr><td colspan="5">Loading predictive analysis...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Action completed successfully</div>
+
+<script>
+const SUPABASE_URL = "https://kzxdxnxgouthsywbsnvl.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let globalData = [];
+
+// Show toast
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = type === 'success' ? '#0b6e4f' : '#a11d2b';
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+}
+
+// Get department from category
+function getDepartment(category) {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('garbage')) return 'Solid Waste Dept';
+    if (cat.includes('pothole')) return 'Road Dept';
+    if (cat.includes('streetlight')) return 'Electrical Dept';
+    if (cat.includes('water')) return 'Water Dept';
+    if (cat.includes('drainage')) return 'Sewage Dept';
+    return 'General Dept';
+}
+
+// Schedule inspection
+async function scheduleInspection(row, event) {
+    try {
+        event.target.disabled = true;
+        event.target.textContent = '⏳ Scheduling...';
+        
+        const { error } = await supabaseClient
+            .from('municipal_tasks')
+            .insert({
+                area_name: row.area_name || row.location,
+                category: row.category,
+                task_type: 'INSPECTION',
+                status: 'SCHEDULED',
+                assigned_department: getDepartment(row.category),
+                priority: row.risk_level === 'HIGH RISK' ? 'HIGH' : 'MEDIUM',
+                created_at: new Date().toISOString()
+            });
+
+        if (error) throw error;
+        
+        event.target.textContent = '✅ Scheduled';
+        event.target.style.background = '#0b6e4f';
+        showToast(`✅ Inspection scheduled for ${row.area_name || row.location}`);
+        
+    } catch (err) {
+        console.error('Inspection error:', err);
+        showToast(`❌ Error: ${err.message}`, 'error');
+        event.target.disabled = false;
+        event.target.textContent = '🔍 Inspect';
+    }
+}
+
+// Create work order
+async function createWorkOrder(row, event) {
+    try {
+        event.target.disabled = true;
+        event.target.textContent = '⏳ Creating...';
+        
+        const { error } = await supabaseClient
+            .from('municipal_tasks')
+            .insert({
+                area_name: row.area_name || row.location,
+                category: row.category,
+                task_type: 'WORK_ORDER',
+                status: 'PENDING',
+                assigned_department: getDepartment(row.category),
+                priority: row.risk_level === 'HIGH RISK' ? 'HIGH' : 'MEDIUM',
+                created_at: new Date().toISOString(),
+                deadline: row.risk_level === 'HIGH RISK' 
+                    ? new Date(Date.now() + 2*24*60*60*1000).toISOString() 
+                    : new Date(Date.now() + 7*24*60*60*1000).toISOString()
+            });
+
+        if (error) throw error;
+        
+        event.target.textContent = '✅ Created';
+        event.target.style.background = '#0b6e4f';
+        showToast(`✅ Work order created for ${row.area_name || row.location}`);
+        
+    } catch (err) {
+        console.error('Work order error:', err);
+        showToast(`❌ Error: ${err.message}`, 'error');
+        event.target.disabled = false;
+        event.target.textContent = '🚀 Deploy';
+    }
+}
+
+// Load data
+async function loadData() {
+    try {
+        const { data, error } = await supabaseClient
+            .from("predictive_risk")
+            .select("*")
+            .order("total_complaints", { ascending: false });
+
+        if (error) throw error;
+
+        globalData = data || [];
+        
+        const table = document.getElementById("riskTable");
+        table.innerHTML = "";
+
+        if (!globalData.length) {
+            table.innerHTML = "<tr><td colspan='5'>No data</td></tr>";
+            return;
+        }
+
+        let highCount = 0;
+        const categories = new Set();
+
+        globalData.forEach((row, index) => {
+            if (row.risk_level === "HIGH RISK") highCount++;
+            categories.add(row.category);
+
+            let badgeClass = "low";
+            if (row.risk_level === "HIGH RISK") badgeClass = "high";
+            else if (row.risk_level === "MEDIUM RISK") badgeClass = "medium";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${row.area_name || row.location || 'Unknown'}</strong></td>
+                <td>${row.category || 'Unknown'}</td>
+                <td>${row.total_complaints || 0}</td>
+                <td><span class="badge ${badgeClass}">${row.risk_level}</span></td>
+                <td>
+                    <button class="action-btn inspect" data-index="${index}">🔍 Inspect</button>
+                    <button class="action-btn deploy" data-index="${index}">🚀 Deploy</button>
+                </td>
+            `;
+            table.appendChild(tr);
+        });
+
+        document.getElementById("totalZones").innerText = globalData.length;
+        document.getElementById("highZones").innerText = highCount;
+        document.getElementById("activeCategories").innerText = categories.size;
+        document.getElementById("alertBanner").style.display = highCount > 0 ? "block" : "none";
+
+        document.querySelectorAll('.inspect').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const index = e.target.dataset.index;
+                await scheduleInspection(globalData[index], e);
+            });
+        });
+
+        document.querySelectorAll('.deploy').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const index = e.target.dataset.index;
+                await createWorkOrder(globalData[index], e);
+            });
+        });
+
+    } catch (err) {
+        console.error('Load error:', err);
+        document.getElementById("riskTable").innerHTML = 
+            `<tr><td colspan="5">Error: ${err.message}</td></tr>`;
+    }
+}
+
+// Start
+loadData();
+</script>
+
+</body>
+</html>

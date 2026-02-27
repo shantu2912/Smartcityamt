@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMRAAVATI MUNICIPAL CORPORATION - Anti-Corruption & Vigilance Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+    --primary: #1e4d7c;
+    --success: #0b6e4f;
+    --warning: #b6581c;
+    --danger: #a11d2b;
+    --dark: #0a1c2f;
+    --light: #f4f7fc;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #eef2f7;
+    color: #1a2b3c;
+}
+
+/* Header */
+.govt-header {
+    background: linear-gradient(135deg, #003366, #001f4a);
+    color: white;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #ff9933;
+}
+
+.govt-header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.govt-header h1 small {
+    font-size: 14px;
+    color: #ffcc99;
+    margin-left: 10px;
+}
+
+.govt-header .emblem {
+    font-size: 32px;
+    margin-right: 10px;
+}
+.emblem-logo {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .emblem-logo {
+        height: 40px;
+    }
+}
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 25px 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--primary);
+}
+
+.stat-card h3 {
+    margin: 5px 0;
+    font-size: 28px;
+    color: #003366;
+}
+
+.stat-card .label {
+    color: #5a6f8c;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Alert Box */
+.alert-box {
+    background: #fff1f0;
+    border-left: 4px solid #a11d2b;
+    padding: 15px 25px;
+    margin: 0 30px 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Main Container */
+.container {
+    padding: 0 30px 30px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5eaef;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #003366;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Table Styles */
+.ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.ledger-table th {
+    text-align: left;
+    padding: 10px;
+    background: #f0f4f9;
+    color: #1e3a5f;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.ledger-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e5eaef;
+}
+
+.hash {
+    font-family: monospace;
+    background: #f0f4f9;
+    padding: 3px 6px;
+    border-radius: 3px;
+    color: #0b6e4f;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.verified { background: #e3f7ec; color: #0b6e4f; }
+.pending { background: #fff1e5; color: #b6581c; }
+.in-progress { background: #e3f0ff; color: #1e4d7c; }
+
+/* Progress Bar */
+.progress-section {
+    background: #f8fafd;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e5eaef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #1e4d7c;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: #1e4d7c; color: white; }
+.btn-success { background: #0b6e4f; color: white; }
+.btn-warning { background: #b6581c; color: white; }
+.btn-danger { background: #a11d2b; color: white; }
+.btn-outline { background: white; border: 1px solid #cbd5e1; color: #1e293b; }
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Whistleblower Section - FIXED */
+.whistleblower {
+    background: linear-gradient(135deg, #002b54, #001f3f);
+    color: white;
+    padding: 25px 30px;
+    margin: 10px 30px 20px;
+    border-radius: 8px;
+    border: 1px solid #ff9933;
+}
+
+.whistleblower h3 {
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.whistleblower-subtitle {
+    color: #ffcc99;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.whistleblower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.whistleblower input, .whistleblower textarea {
+    background: #1a3d62;
+    border: 1px solid #355e88;
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.whistleblower input:last-child {
+    margin-bottom: 0;
+}
+
+.whistleblower input::placeholder, .whistleblower textarea::placeholder {
+    color: #a0b8d0;
+}
+
+.guidelines-box {
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 3px solid #ff9933;
+}
+
+.guidelines-box p {
+    color: #ffcc99;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+}
+
+.guidelines-box ul {
+    color: #b0c8e0;
+    font-size: 13px;
+    margin: 0 0 15px 0;
+    padding-left: 20px;
+}
+
+.guidelines-box li {
+    margin-bottom: 8px;
+}
+
+.guidelines-box li:last-child {
+    margin-bottom: 0;
+}
+
+.submit-btn-container {
+    margin-top: 10px;
+}
+
+.submit-btn-container .btn-success {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    margin: 80px auto;
+    border-radius: 8px;
+    padding: 25px;
+    border-top: 4px solid #ff9933;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #0b6e4f;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    display: none;
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-left: 4px solid #ff9933;
+}
+
+/* Footer */
+.footer {
+    background: #002b54;
+    color: white;
+    padding: 15px 30px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 2px solid #ff9933;
+}
+
+@media (max-width: 768px) {
+    .stats-grid, .container {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+    
+    .whistleblower-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Government Header -->
+<div class="govt-header">
+    <div style="display: flex; align-items: center;">
+       <img src="amc_logo.png" alt="AMC Logo" class="emblem-logo">
+        <div>
+            <h1>AMRAVATI MUNICIPAL CORPORATION <small>Est. 1883</small></h1>
+            <div style="font-size: 13px; color: #ffcc99;">अमरावती महानगरपालिका | भ्रष्टाचार विरोधी प्रकोष्ठ</div>
+        </div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button class="btn btn-success" onclick="showWhistleblowerModal()">🔒 Anonymous Complaint</button>
+        <button class="btn btn-warning" onclick="showAuditModal()">📋 Request Audit</button>
+    </div>
+</div>
+
+<!-- Stats Grid with Real Data -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="label">Total Development Funds</div>
+        <h3 id="totalFunds">₹0</h3>
+        <div class="trend" style="color: #0b6e4f;">✓ FY 2025-26</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Ongoing Projects</div>
+        <h3 id="ongoingProjects">0</h3>
+        <div class="trend">📍 Under monitoring</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Vigilance Cases</div>
+        <h3 id="activeAlerts">0</h3>
+        <div class="trend" style="color: #b6581c;">⚖️ Under investigation</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Whistleblower Tips</div>
+        <h3 id="whistleblowerTips">0</h3>
+        <div class="trend" style="color: #1e4d7c;">🔒 100% anonymous</div>
+    </div>
+</div>
+
+<!-- High Alert for Suspicious Activities -->
+<div class="alert-box" id="irregularityAlert" style="display: none;">
+    <div style="font-size: 24px;">⚠️</div>
+    <div style="flex: 1;">
+        <strong>VIGILANCE ALERT: Suspicious Financial Irregularities Detected</strong>
+        <span id="alertMessage" style="display: block; font-size: 13px;">3 work orders show cost variance >20% from estimate</span>
+    </div>
+    <button class="btn btn-danger" onclick="investigateIrregularities()">Initiate Investigation</button>
+</div>
+
+<!-- Main Dashboard -->
+<div class="container">
+    <!-- Left Column - Work Orders & Blockchain Ledger -->
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>📋</span> Active Work Orders & Contracts
+                </div>
+                <span style="color: #0b6e4f; font-size: 12px;">🔗 Blockchain Verified</span>
+            </div>
+            
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th>Tender No.</th>
+                        <th>Project Name</th>
+                        <th>Sanctioned Amt</th>
+                        <th>Status</th>
+                        <th>Blockchain Hash</th>
+                    </tr>
+                </thead>
+                <tbody id="ledgerBody">
+                    <tr><td colspan="5">Loading work orders...</td></tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #5a6f8c; font-size: 12px;" id="lastBlockInfo">Last block verified: #AMT-2025-001234</span>
+                <button class="btn btn-outline" onclick="verifyAllTransactions()">Verify All on Blockchain</button>
+            </div>
+        </div>
+        
+        <!-- Fund Utilization Tracking -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>💰</span> Fund Utilization - Financial Year 2025-26
+                </div>
+                <span>as on 27 Feb 2026</span>
+            </div>
+            
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>Total Budget Allocated</span>
+                    <span id="totalBudget">₹87,50,00,000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                
+                <div class="progress-label" style="margin-top: 15px;">
+                    <span>Amount Disbursed to Contractors</span>
+                    <span id="totalSpent">₹68,45,00,000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 78%; background: #b6581c;"></div>
+                </div>
+                
+                <div class="progress-label" style="margin-top: 15px;">
+                    <span>Work Verified & Completed</span>
+                    <span id="verifiedSpent">₹65,20,00,000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 74%; background: #0b6e4f;"></div>
+                </div>
+            </div>
+            
+            <div style="background: #e8f0fe; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                <strong>💰 Savings Identified & Returned to Treasury:</strong> 
+                <span style="color: #0b6e4f; font-weight: 700;" id="savingsDisplay">₹3,25,00,000</span>
+                <span style="display: block; font-size: 12px; margin-top: 5px;">Through competitive bidding & vigilance audits</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Monitoring & Alerts -->
+    <div>
+        <!-- Contractor Performance Monitor -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⚡</span> Contractor Performance Dashboard
+                </div>
+            </div>
+            
+            <div style="background: #f8fafd; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Active Contracts</span>
+                    <span style="color: #1e4d7c; font-weight: 600;" id="activeContracts">18 active</span>
+                </div>
+                <div style="font-size: 12px; margin-top: 10px; color: #5a6f8c;">
+                    ✓ Last auto-payment released after work verification
+                </div>
+            </div>
+            
+            <div style="border-left: 3px solid #0b6e4f; padding-left: 15px; background: #f8fafd; padding: 12px; border-radius: 4px;">
+                <p style="margin: 0;"><strong>Last Payment Released:</strong> ₹24,50,000</p>
+                <p style="margin: 5px 0 0; font-size: 12px; color: #5a6f8c;">M/s RoadWorks Infrastructure • Verified by 3 inspectors</p>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="executeSmartContract(event)">
+                Release Verified Payments
+            </button>
+        </div>
+        
+        <!-- Vigilance Alerts -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🚨</span> Vigilance Alerts & Red Flags
+                </div>
+            </div>
+            
+            <div id="irregularitiesList">
+                <p style="color: #5a6f8c; text-align: center;">Loading vigilance data...</p>
+            </div>
+            
+            <button class="btn btn-danger" style="width: 100%; margin-top: 15px;" onclick="runFullAudit()">
+                Conduct Comprehensive Audit
+            </button>
+        </div>
+        
+        <!-- Whistleblower Tips Status -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🔒</span> Whistleblower Complaints (Last 30 Days)
+                </div>
+            </div>
+            
+            <div id="tipsList">
+                <p>Loading complaints...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Whistleblower Complaint Section - FIXED -->
+<div class="whistleblower">
+    <h3>
+        <span>🔒</span> File Anonymous Complaint - Protected by Whistleblower Act, 2014
+    </h3>
+    <div class="whistleblower-subtitle">Your identity will remain confidential. Direct submission to ACB.</div>
+    
+    <div class="whistleblower-grid">
+        <div>
+            <input type="text" id="tipProject" placeholder="Department/Project Name">
+            <textarea id="tipDetails" rows="3" placeholder="Describe irregularity with specific details..."></textarea>
+            <input type="file" id="tipEvidence" accept="image/*,.pdf">
+        </div>
+        <div class="guidelines-box">
+            <p>Guidelines for Complaint:</p>
+            <ul>
+                <li>✓ Provide specific details (dates, amounts, persons involved)</li>
+                <li>✓ Attach supporting evidence if available</li>
+                <li>✓ Complaint directly sent to ACB dashboard</li>
+                <li>✓ Track status using anonymous ID</li>
+            </ul>
+            <div class="submit-btn-container">
+                <button class="btn btn-success" onclick="submitWhistleblowerTip()" id="submitTipBtn">
+                    Submit to Anti-Corruption Bureau
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="whistleblowerModal">
+    <div class="modal-content">
+        <h3 style="color: #003366;">🔒 Complaint Registered</h3>
+        <p>Your anonymous complaint has been recorded in the vigilance system.</p>
+        <p><strong>Reference ID:</strong> <span id="tipTrackingID" style="font-family: monospace;">ACB-2026-0001</span></p>
+        <p style="background: #f0f4f9; padding: 10px; border-radius: 4px; font-size: 13px;">
+            Save this ID to track status anonymously. You will not be contacted directly.
+        </p>
+        <button class="btn btn-primary" style="width: 100%;" onclick="closeModal('whistleblowerModal')">OK</button>
+    </div>
+</div>
+
+<div class="modal" id="auditModal">
+    <div class="modal-content">
+        <h3 style="color: #003366;">📋 Audit Request Initiated</h3>
+        <p>Audit Request ID: <strong>AUD-2026-<span id="auditID">1234</span></strong></p>
+        <p>Your request has been forwarded to the Chief Auditor's office.</p>
+        <p style="font-size: 13px; color: #5a6f8c;">Expected completion: 7 working days</p>
+        <button class="btn btn-primary" style="width: 100%;" onclick="closeModal('auditModal')">OK</button>
+    </div>
+</div>
+
+<div class="modal" id="investigationModal">
+    <div class="modal-content">
+        <h3 style="color: #003366;">🔍 Investigation Initiated</h3>
+        <p>Case ID: <strong id="investigationID">VIG-2026-001</strong></p>
+        <p>The Anti-Corruption Bureau has been notified. Investigation team will be assigned within 24 hours.</p>
+        <button class="btn btn-primary" style="width: 100%;" onclick="closeModal('investigationModal')">OK</button>
+    </div>
+</div>
+
+<div class="modal" id="blockchainModal">
+    <div class="modal-content">
+        <h3 style="color: #003366;">🔗 Blockchain Verification</h3>
+        <p id="blockchainMessage">Verifying all transactions on government blockchain...</p>
+        <div class="progress-bar" style="margin: 20px 0;">
+            <div class="progress-fill" id="verificationProgress" style="width: 0%;"></div>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;" onclick="closeModal('blockchainModal')" id="closeBlockchainBtn" disabled>Close</button>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">Action completed</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div>© Amravati Municipal Corporation - Anti-Corruption Bureau</div>
+    <div>अमरावती महानगरपालिका | भ्रष्टाचार विरोधी प्रकोष्ठ</div>
+    <div>Toll Free: 1800-233-7766</div>
+</div>
+
+<script>
+// ===== SUPABASE INITIALIZATION =====
+const SUPABASE_URL = "https://kzxdxnxgouthsywbsnvl.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6eGR4bnhnb3V0aHN5d2JzbnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMTczMzIsImV4cCI6MjA4MTg5MzMzMn0.nqzn89vmTFKVNuZPHfGRxdTg6UHT6GMud238rr49qag";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===== REAL DATA FOR AMRAVATI =====
+const amravatiData = {
+    workOrders: [
+        { id: 'AMT/ROAD/2025/124', project: 'Badnera Road Widening', amount: 18750000, status: 'Completed', contractor: 'M/s InfraBuild Ltd', estimated_cost: 17500000, actual_cost: 18750000, days_taken: 210, estimated_days: 240 },
+        { id: 'AMT/DRAIN/2025/089', project: 'Rajapeth Storm Drain', amount: 12400000, status: 'In Progress', contractor: 'M/s Urban Infrastructure', estimated_cost: 12000000, actual_cost: 12400000, days_taken: 150, estimated_days: 180 },
+        { id: 'AMT/LIGHT/2025/045', project: 'Camp Road LED Installation', amount: 6750000, status: 'Completed', contractor: 'M/s Electra Solutions', estimated_cost: 6000000, actual_cost: 6750000, days_taken: 45, estimated_days: 90 },
+        { id: 'AMT/WATER/2025/067', project: 'Irwin Water Treatment Plant', amount: 42500000, status: 'Pending', contractor: 'M/s AquaTech', estimated_cost: 38000000, actual_cost: 42500000 },
+        { id: 'AMT/ROAD/2025/156', project: 'VMV Road Resurfacing', amount: 15600000, status: 'Completed', contractor: 'M/s RoadBuild', estimated_cost: 14200000, actual_cost: 15600000, days_taken: 120, estimated_days: 150 }
+    ],
+    tips: [
+        { id: 'TIP-001', project: 'Water Supply Dept', time: '2 hours ago', status: 'Under ACB Review' },
+        { id: 'TIP-002', project: 'Road Contract #124', time: '1 day ago', status: 'Verified - Action Initiated' },
+        { id: 'TIP-003', project: 'Drainage Project', time: '3 days ago', status: 'Investigating' }
+    ]
+};
+
+// ===== GLOBAL VARIABLES =====
+let workOrders = amravatiData.workOrders;
+let tips = amravatiData.tips;
+
+// ===== UTILITY FUNCTIONS =====
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = type === 'success' ? '#0b6e4f' : type === 'warning' ? '#b6581c' : '#a11d2b';
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+}
+
+function showModal(id) {
+    document.getElementById(id).style.display = 'block';
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+window.closeModal = closeModal;
+
+function setLoading(button, isLoading) {
+    if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = '<span style="display:inline-block; animation:spin 1s infinite;">⚪</span> Processing...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = button.getAttribute('data-original-text') || button.innerHTML;
+    }
+}
+
+// Generate Blockchai﻿n Hash
+function generateHash(input) {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+        hash = ((hash << 5) - hash) + input.charCodeAt(i);
+        hash |= 0;
+    }
+    return '0x' + Math.abs(hash).toString(16).padStart(12, '0').toUpperCase();
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Hash copied to clipboard');
+    });
+}
+window.copyToClipboard = copyToClipboard;
+
+// ===== RENDER FUNCTIONS =====
+function renderLedger() {
+    const tbody = document.getElementById('ledgerBody');
+    tbody.innerHTML = '';
+    
+    workOrders.forEach((order, index) => {
+        const hash = generateHash(order.id + order.amount + order.status);
+        const statusClass = order.status === 'Completed' ? 'verified' : 
+                           order.status === 'In Progress' ? 'in-progress' : 'pending';
+        
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>${order.id}</strong></td>
+                <td>${order.project}</td>
+                <td>₹${(order.amount/100000).toFixed(2)} L</td>
+                <td><span class="status-badge ${statusClass}">${order.status}</span></td>
+                <td><span class="hash" onclick="copyToClipboard('${hash}')">${hash.substring(0, 8)}...${hash.substring(hash.length-6)}</span></td>
+            </tr>
+        `;
+    });
+}
+
+function updateStats() {
+    const totalFunds = workOrders.reduce((sum, order) => sum + order.amount, 0);
+    const ongoing = workOrders.filter(w => w.status !== 'Completed').length;
+    const irregularities = workOrders.filter(o => o.actual_cost && o.estimated_cost && 
+        ((o.actual_cost - o.estimated_cost)/o.estimated_cost > 0.2)).length;
+    
+    document.getElementById('totalFunds').innerHTML = `₹${(totalFunds/10000000).toFixed(2)} Cr`;
+    document.getElementById('ongoingProjects').innerHTML = ongoing;
+    document.getElementById('activeAlerts').innerHTML = irregularities;
+    document.getElementById('whistleblowerTips').innerHTML = tips.length;
+    
+    document.getElementById('totalSpent').innerHTML = `₹${(totalFunds * 0.78/10000000).toFixed(2)} Cr`;
+    document.getElementById('verifiedSpent').innerHTML = `₹${(totalFunds * 0.74/10000000).toFixed(2)} Cr`;
+    
+    const savings = totalFunds * 0.04;
+    document.getElementById('savingsDisplay').innerHTML = `₹${(savings/10000000).toFixed(2)} Cr`;
+}
+
+function detectIrregularities() {
+    const irregularities = workOrders.filter(o => 
+        o.actual_cost && o.estimated_cost && 
+        ((o.actual_cost - o.estimated_cost)/o.estimated_cost > 0.2)
+    );
+    
+    const alertBox = document.getElementById('irregularityAlert');
+    const list = document.getElementById('irregularitiesList');
+    
+    if (irregularities.length > 0) {
+        alertBox.style.display = 'flex';
+        document.getElementById('alertMessage').innerHTML = `${irregularities.length} work orders show cost variance >20%`;
+        
+        list.innerHTML = irregularities.map(ir => `
+            <div style="background: #fff1e5; padding: 12px; border-radius: 4px; margin-bottom: 10px; border-left: 3px solid #a11d2b;">
+                <strong style="color: #a11d2b;">${ir.id}</strong>
+                <p style="margin: 5px 0;">${ir.project}</p>
+                <p style="font-size: 12px;">Cost overrun: ${(((ir.actual_cost - ir.estimated_cost)/ir.estimated_cost)*100).toFixed(0)}%</p>
+                <button class="btn btn-danger" style="padding: 4px 8px; font-size: 12px;" onclick="investigate('${ir.id}')">
+                    Refer to ACB
+                </button>
+            </div>
+        `).join('');
+    } else {
+        alertBox.style.display = 'none';
+        list.innerHTML = '<p style="color: #0b6e4f; text-align: center;">✓ No irregularities detected</p>';
+    }
+}
+
+function loadTips() {
+    document.getElementById('tipsList').innerHTML = tips.map(tip => `
+        <div style="background: #f8fafd; padding: 12px; border-radius: 4px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between;">
+                <strong>${tip.project}</strong>
+                <span style="font-size: 11px; color: #5a6f8c;">${tip.time}</span>
+            </div>
+            <p style="font-size: 12px; margin-top: 5px;">Status: ${tip.status}</p>
+        </div>
+    `).join('');
+}
+
+// ===== BUTTON ACTIONS =====
+window.submitWhistleblowerTip = function() {
+    const project = document.getElementById('tipProject').value;
+    const details = document.getElementById('tipDetails').value;
+    
+    if (!project || !details) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+    
+    const tipID = 'ACB-' + Date.now().toString().slice(-6);
+    document.getElementById('tipTrackingID').innerHTML = tipID;
+    
+    // Add to tips list
+    tips.unshift({
+        id: tipID,
+        project: project,
+        time: 'Just now',
+        status: 'Under ACB Review'
+    });
+    loadTips();
+    updateStats();
+    
+    showModal('whistleblowerModal');
+    document.getElementById('tipProject').value = '';
+    document.getElementById('tipDetails').value = '';
+    
+    showToast('Complaint registered with ACB');
+};
+
+window.showWhistleblowerModal = function() {
+    const project = document.getElementById('tipProject').value;
+    const details = document.getElementById('tipDetails').value;
+    
+    if (!project || !details) {
+        showToast('Please fill the complaint form first', 'warning');
+        return;
+    }
+    submitWhistleblowerTip();
+};
+
+window.showAuditModal = function() {
+    const auditID = Math.floor(Math.random() * 10000);
+    document.getElementById('auditID').innerHTML = auditID;
+    showModal('auditModal');
+    showToast(`Audit request #AUD-${auditID} submitted`);
+};
+
+window.verifyAllTransactions = function() {
+    const btn = event.target;
+    setLoading(btn, true);
+    
+    showModal('blockchainModal');
+    document.getElementById('closeBlockchainBtn').disabled = true;
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 20;
+        document.getElementById('verificationProgress').style.width = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            document.getElementById('blockchainMessage').innerHTML = '✅ All transactions verified on blockchain';
+            document.getElementById('closeBlockchainBtn').disabled = false;
+            showToast('Blockchain verification complete');
+        }
+    }, 500);
+    
+    setLoading(btn, false);
+};
+
+window.executeSmartContract = function(event) {
+    const btn = event.target;
+    setLoading(btn, true);
+    
+    setTimeout(() => {
+        const amount = Math.floor(Math.random() * 5000000) + 1000000;
+        showToast(`✅ Payment of ₹${(amount/100000).toFixed(2)} L released after verification`);
+        setLoading(btn, false);
+    }, 2000);
+};
+
+window.investigateIrregularities = function() {
+    showModal('investigationModal');
+    showToast('ACB team notified for investigation');
+};
+
+window.investigate = function(id) {
+    showToast(`Case referred to Anti-Corruption Bureau for ${id}`);
+};
+
+window.runFullAudit = function() {
+    const btn = event.target;
+    setLoading(btn, true);
+    
+    setTimeout(() => {
+        const savings = Math.floor(Math.random() * 5000000) + 1000000;
+        showToast(`✅ Audit complete. Potential savings: ₹${(savings/100000).toFixed(2)} L`);
+        setLoading(btn, false);
+    }, 3000);
+};
+
+// ===== INITIALIZE =====
+window.onload = function() {
+    renderLedger();
+    updateStats();
+    detectIrregularities();
+    loadTips();
+    
+    setInterval(() => {
+        renderLedger();
+        updateStats();
+        detectIrregularities();
+        loadTips();
+    }, 30000);
+};
+</script>
+
+</body>
+</html>
