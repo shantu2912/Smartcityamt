@@ -458,41 +458,6 @@ body {
     gap: 8px;
 }
 
-.photo-grid {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.photo-item {
-    width: 120px;
-    background: var(--gray-100);
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid var(--gray-200);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.photo-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border-color: var(--primary);
-}
-
-.photo-item i {
-    font-size: 32px;
-    color: var(--primary);
-    margin-bottom: 5px;
-}
-
-.photo-item span {
-    display: block;
-    font-size: 12px;
-    color: var(--gray-600);
-}
-
 .photo-placeholder {
     background: var(--gray-100);
     border-radius: 8px;
@@ -506,6 +471,19 @@ body {
     font-size: 24px;
     margin-bottom: 5px;
     color: var(--gray-400);
+}
+
+.photo-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.photo-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 /* Error Card */
@@ -687,7 +665,7 @@ body {
 <!-- Government Header -->
 <div class="govt-header">
     <div style="display: flex; align-items: center;">
-        <img src="amc_logo.png" alt="AMC Logo" class="emblem-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <img src="amc-logo.png" alt="AMC Logo" class="emblem-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
         <div style="display: none; width: 50px; height: 50px; background: var(--secondary); border-radius: 8px; margin-right: 15px; align-items: center; justify-content: center; font-weight: bold; color: var(--primary-dark);">AMC</div>
         <div>
             <h1>अमरावती महानगरपालिका <small>Est. 1883</small></h1>
@@ -705,7 +683,7 @@ body {
     <div class="nav-item" onclick="window.location.href='index.html'">
         <i class="fas fa-home"></i> Home
     </div>
-    <div class="nav-item" onclick="window.location.href='report_issue.html'">
+    <div class="nav-item" onclick="window.location.href='report issue.html'">
         <i class="fas fa-plus-circle"></i> Report Issue
     </div>
     <div class="nav-item active">
@@ -727,19 +705,19 @@ body {
                 <input type="text" class="search-input" id="trackingId" 
                        placeholder="Enter Tracking ID (e.g., CC-1740678901234)">
             </div>
-            <button class="search-btn" onclick="trackComplaint()">
+            <button class="search-btn" onclick="window.trackComplaint()">
                 <i class="fas fa-arrow-right"></i> Track Now
             </button>
         </div>
         <div class="example-text">
-            ⓘ Example: <span onclick="document.getElementById('trackingId').value='CC-1740678901234'; trackComplaint()">CC-1740678901234</span>
+            ⓘ Example: <span onclick="document.getElementById('trackingId').value='CC-1740678901234'; window.trackComplaint()">CC-1740678901234</span>
         </div>
     </div>
 
     <!-- Loading State -->
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <p>Fetching complaint details...</p>
+        <p>Fetching complaint details from database...</p>
     </div>
 
     <!-- Error Card -->
@@ -749,7 +727,7 @@ body {
         </div>
         <h3 class="error-title">Complaint Not Found</h3>
         <p class="error-message" id="errorMessage">Please check your Tracking ID and try again.</p>
-        <button class="search-btn" onclick="tryAgain()" style="margin: 0 auto;">Try Again</button>
+        <button class="search-btn" onclick="window.tryAgain()" style="margin: 0 auto;">Try Again</button>
     </div>
 
     <!-- Complaint Details Card -->
@@ -865,26 +843,12 @@ body {
         </div>
     </div>
 
-    <!-- Recent Complaints -->
+    <!-- Recent Complaints from Database -->
     <div class="recent-title">
         <i class="fas fa-clock"></i> Recent Complaints
     </div>
     <div class="recent-grid" id="recentGrid">
-        <div class="recent-item" onclick="loadRecent('CC-1740678901234')">
-            <div class="recent-id">CC-1740678901234</div>
-            <div class="recent-category">Potholes / Road Damage</div>
-            <span class="recent-status pending">Pending</span>
-        </div>
-        <div class="recent-item" onclick="loadRecent('CC-1740678912345')">
-            <div class="recent-id">CC-1740678912345</div>
-            <div class="recent-category">Garbage / Sanitation</div>
-            <span class="recent-status in-progress">In Progress</span>
-        </div>
-        <div class="recent-item" onclick="loadRecent('CC-1740678923456')">
-            <div class="recent-id">CC-1740678923456</div>
-            <div class="recent-category">Water Leakage</div>
-            <span class="recent-status resolved">Resolved</span>
-        </div>
+        <div class="loading" style="grid-column: span 3;">Loading recent complaints...</div>
     </div>
 </div>
 
@@ -899,7 +863,9 @@ body {
 // ===== SUPABASE INITIALIZATION =====
 const SUPABASE_URL = "https://ibfeegtzehgspswvlyna.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliZmVlZ3R6ZWhnc3Bzd3ZseW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTY5ODAsImV4cCI6MjA4NzU5Mjk4MH0.I5CPOxe69SQ3O0qqb5A6Zx-pAWzLmZpXyu97mt9Zvag";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Create Supabase client
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ===== DOM ELEMENTS =====
 const loadingEl = document.getElementById('loading');
@@ -907,6 +873,7 @@ const errorCard = document.getElementById('errorCard');
 const complaintCard = document.getElementById('complaintCard');
 const errorMessage = document.getElementById('errorMessage');
 const trackingIdInput = document.getElementById('trackingId');
+const recentGrid = document.getElementById('recentGrid');
 
 // ===== UTILITY FUNCTIONS =====
 function showLoading() {
@@ -927,6 +894,7 @@ function showError(message) {
 }
 
 function formatDate(dateString) {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleString('en-IN', {
         day: '2-digit',
@@ -969,8 +937,38 @@ function updateTimeline(status, createdDate) {
     }
 }
 
+// ===== LOAD RECENT COMPLAINTS =====
+async function loadRecentComplaints() {
+    try {
+        const { data, error } = await sb
+            .from('allcomplaints')
+            .select('tracking_id, category, status, location, created_at')
+            .order('created_at', { ascending: false })
+            .limit(6);
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+            recentGrid.innerHTML = data.map(complaint => `
+                <div class="recent-item" onclick="window.loadRecent('${complaint.tracking_id}')">
+                    <div class="recent-id">${complaint.tracking_id}</div>
+                    <div class="recent-category">${complaint.category || 'General'} • ${complaint.location || 'Unknown'}</div>
+                    <span class="recent-status ${(complaint.status || 'Pending').toLowerCase().replace(' ', '-')}">
+                        ${complaint.status || 'Pending'}
+                    </span>
+                </div>
+            `).join('');
+        } else {
+            recentGrid.innerHTML = '<div style="grid-column: span 3; text-align: center; padding: 20px;">No complaints found in database</div>';
+        }
+    } catch (err) {
+        console.error('Error loading recent complaints:', err);
+        recentGrid.innerHTML = '<div style="grid-column: span 3; text-align: center; padding: 20px; color: var(--danger);">Error loading recent complaints</div>';
+    }
+}
+
 // ===== MAIN TRACKING FUNCTION =====
-async function trackComplaint() {
+window.trackComplaint = async function() {
     const trackingId = trackingIdInput.value.trim();
     
     if (!trackingId) {
@@ -982,13 +980,16 @@ async function trackComplaint() {
     
     try {
         // Query the allcomplaints table
-        const { data, error } = await supabase
+        const { data, error } = await sb
             .from('allcomplaints')
             .select('*')
             .eq('tracking_id', trackingId)
             .maybeSingle();
         
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase error:', error);
+            throw error;
+        }
         
         if (data) {
             // Display the complaint
@@ -1018,7 +1019,7 @@ async function trackComplaint() {
             const photoDisplay = document.getElementById('photoDisplay');
             if (data.photo_url) {
                 photoDisplay.innerHTML = `
-                    <img src="${data.photo_url}" alt="Complaint photo" style="max-width: 100%; max-height: 200px; border-radius: 8px; cursor: pointer;" onclick="window.open('${data.photo_url}', '_blank')">
+                    <img src="${data.photo_url}" alt="Complaint photo" class="photo-image" onclick="window.open('${data.photo_url}', '_blank')">
                     <p style="margin-top: 10px; font-size: 12px; color: var(--gray-500);">Click image to enlarge</p>
                 `;
             } else {
@@ -1030,35 +1031,41 @@ async function trackComplaint() {
             
             complaintCard.style.display = 'block';
             hideLoading();
+            
+            // Scroll to complaint card
+            complaintCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-            showError('Complaint not found with this Tracking ID');
+            showError(`Complaint with ID "${trackingId}" not found in database`);
         }
         
     } catch (err) {
         console.error('Error tracking complaint:', err);
-        showError('Error fetching complaint details. Please try again.');
+        showError('Error fetching complaint details. Please check your connection and try again.');
     }
-}
+};
 
 // ===== HELPER FUNCTIONS =====
-function tryAgain() {
+window.tryAgain = function() {
     errorCard.style.display = 'none';
     trackingIdInput.focus();
-}
+};
 
-function loadRecent(trackingId) {
+window.loadRecent = function(trackingId) {
     trackingIdInput.value = trackingId;
-    trackComplaint();
-}
+    window.trackComplaint();
+};
 
 // ===== INITIALIZE =====
-window.onload = function() {
+window.onload = async function() {
+    // Load recent complaints from database
+    await loadRecentComplaints();
+    
     // Check if URL has tracking ID parameter
     const urlParams = new URLSearchParams(window.location.search);
     const trackingParam = urlParams.get('id');
     if (trackingParam) {
         trackingIdInput.value = trackingParam;
-        trackComplaint();
+        window.trackComplaint();
     }
 };
 </script>
