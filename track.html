@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Grievance | CivicConnect Amravati</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gov-blue: #003366;
+            --accent: #b38b1d;
+            --bg: #f0f4f8;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 { font-size: 2.5rem; color: var(--gov-blue); font-weight: 800; margin-bottom: 10px; }
+        .header p { color: #64748b; font-size: 1.1rem; }
+
+        /* --- Search Card --- */
+        .search-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .input-wrapper { flex: 1; position: relative; }
+        .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        
+        input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+        }
+        input:focus { border-color: var(--gov-blue); box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1); }
+
+        .btn-search {
+            background: var(--gov-blue);
+            color: white;
+            padding: 0 30px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-search:hover { background: #002244; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+
+        /* --- Results Section --- */
+        #results { margin-top: 20px; }
+        
+        .complaint-card {
+            background: var(--white);
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 8px solid var(--gov-blue);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            animation: fadeIn 0.5s ease-out;
+            transition: transform 0.2s;
+        }
+        .complaint-card:hover { transform: scale(1.02); }
+
+        .info h3 { color: var(--gov-blue); font-size: 1.2rem; margin-bottom: 8px; }
+        .info p { font-size: 0.95rem; color: #475569; margin-bottom: 5px; }
+
+        .status-pill {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            align-self: start;
+            text-align: center;
+        }
+        .status-pending { background: #fff7ed; color: #c2410c; }
+        .status-resolved { background: #f0fdf4; color: #15803d; }
+        .status-in-progress { background: #eff6ff; color: #1d4ed8; }
+
+        .loader { display: none; text-align: center; margin: 40px 0; }
+        .loader i { font-size: 2rem; color: var(--gov-blue); animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Citizen Command Centre</h1>
+            <p>Real-time grievance tracking for Amravati District</p>
+        </div>
+
+        <div class="search-card">
+            <div class="input-wrapper">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <input type="text" id="mobileInput" placeholder="Enter Registered Mobile Number" maxlength="10">
+            </div>
+            <button class="btn-search" onclick="trackGrievances()">Find My Issues</button>
+        </div>
+
+        <div class="loader" id="loader"><i class="fa-solid fa-circle-notch"></i></div>
+        
+        <div id="results">
+            </div>
+    </div>
+
+    <script>
+        // 🌟 Initializing Supabase
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function trackGrievances() {
+            const mobile = document.getElementById('mobileInput').value;
+            const resultsDiv = document.getElementById('results');
+            const loader = document.getElementById('loader');
+
+            if (mobile.length !== 10) { alert("Invalid Mobile Number."); return; }
+
+            // Show UI loading state
+            loader.style.display = 'block';
+            resultsDiv.innerHTML = '';
+
+            // Query the 'allcomplaints' table directly
+            const { data, error } = await supabase
+                .from('allcomplaints')
+                .select('id, tracking_id, category, status, description, created_at, ward')
+                .eq('mobile', mobile)
+                .order('created_at', { ascending: false });
+
+            loader.style.display = 'none';
+
+            if (error || !data || data.length === 0) {
+                resultsDiv.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:40px;">No records found for this citizen ID.</div>';
+                return;
+            }
+
+            // Iterate and build high-quality cards
+            data.forEach(item => {
+                const date = new Date(item.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+                const statusClass = item.status ? `status-${item.status.toLowerCase().replace(' ', '-')}` : 'status-pending';
+
+                resultsDiv.innerHTML += `
+                    <div class="complaint-card">
+                        <div class="info">
+                            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold;">TICKET #${item.tracking_id || item.id}</span>
+                            <h3>${item.category}</h3>
+                            <p><i class="fa-solid fa-location-dot" style="margin-right:8px;"></i>Ward: ${item.ward || 'General'}</p>
+                            <p><strong>Detail:</strong> ${item.description}</p>
+                            <p style="margin-top:10px; font-size:0.8rem;">Submitted on: ${date}</p>
+                        </div>
+                        <div class="status-pill ${statusClass}">
+                            ${item.status || 'PENDING'}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
